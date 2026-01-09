@@ -1,6 +1,6 @@
 ﻿namespace Smeaql;
 
-public class Query
+public class SqlQuery
 {
-    
+
 }

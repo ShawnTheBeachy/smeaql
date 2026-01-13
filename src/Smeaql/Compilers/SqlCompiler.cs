@@ -1,6 +1,6 @@
-﻿using Smeaql.Filter;
-using Smeaql.From;
+﻿using Smeaql.From;
 using Smeaql.Select;
+using Smeaql.Where;
 
 namespace Smeaql.Compilers;
 
@@ -11,34 +11,47 @@ public abstract class SqlCompiler<T>
         where TQuery : SqlQueryBase<TQuery>
     {
         var compiledQuery = new CompiledSqlQuery();
+        CompileSelect(query, compiledQuery);
+        CompileFrom(query, compiledQuery);
+        CompileWheres(query, compiledQuery);
+        return compiledQuery;
+    }
+
+    private void CompileFrom<TQuery>(SqlQueryBase<TQuery> query, CompiledSqlQuery compiledQuery)
+        where TQuery : SqlQueryBase<TQuery>
+    {
+        compiledQuery.Write(" FROM ");
+
+        foreach (var clause in query.Clauses.OfType<FromClause>())
+            clause.Compile(This(), compiledQuery);
+    }
+
+    private void CompileSelect<TQuery>(SqlQueryBase<TQuery> query, CompiledSqlQuery compiledQuery)
+        where TQuery : SqlQueryBase<TQuery>
+    {
         compiledQuery.Write("SELECT ");
 
-        foreach (var selectClause in query.Clauses.OfType<SelectClause>())
-            CompileClause(selectClause);
+        foreach (var clause in query.Clauses.OfType<SelectClause>())
+            clause.Compile(This(), compiledQuery);
+    }
 
-        compiledQuery.Write(' ');
-
-        foreach (var fromClause in query.Clauses.OfType<FromClause>())
-            CompileClause(fromClause);
-
-        if (!query.HasClause<FilterClause>())
-            return compiledQuery;
+    private void CompileWheres<TQuery>(SqlQueryBase<TQuery> query, CompiledSqlQuery compiledQuery)
+        where TQuery : SqlQueryBase<TQuery>
+    {
+        if (!query.HasClause<WhereClause>())
+            return;
 
         compiledQuery.Write(" WHERE ");
-        var firstFilter = true;
+        var firstClause = true;
 
-        foreach (var filterClause in query.Clauses.OfType<FilterClause>())
+        foreach (var clause in query.Clauses.OfType<WhereClause>())
         {
-            if (!firstFilter)
-                compiledQuery.Write($" {filterClause.FilterFlag.ToSql()} ");
+            if (!firstClause)
+                compiledQuery.Write($" {clause.WhereFlag.ToSql()} ");
 
-            CompileClause(filterClause);
-            firstFilter = false;
+            clause.Compile(This(), compiledQuery);
+            firstClause = false;
         }
-
-        return compiledQuery;
-
-        void CompileClause(SqlClause clause) => clause.Compile(This(), compiledQuery);
     }
 
     internal abstract T This();

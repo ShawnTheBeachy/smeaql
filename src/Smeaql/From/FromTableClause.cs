@@ -10,5 +10,5 @@ internal sealed class FromTableClause : FromClause
     }
 
     public override void Compile<TCompiler>(TCompiler compiler, CompiledSqlQuery compiledQuery) =>
-        compiledQuery.Write($"FROM {_table}");
+        compiledQuery.Write(_table);
 }

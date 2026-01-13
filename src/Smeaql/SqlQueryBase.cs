@@ -1,5 +1,5 @@
-﻿using Smeaql.Filter;
-using Smeaql.From;
+﻿using Smeaql.From;
+using Smeaql.Where;
 
 namespace Smeaql;
 
@@ -40,7 +40,7 @@ public abstract class SqlQueryBase<T>
 
     public T WhereColumns(string leftColumn, string rightColumn)
     {
-        _clauses.Add(new WhereColumnsClause(leftColumn, rightColumn, FilterFlag.And));
+        _clauses.Add(new WhereColumnsClause(leftColumn, rightColumn, WhereFlag.And));
         return This();
     }
 }

@@ -1,15 +1,15 @@
-﻿namespace Smeaql.Filter;
+﻿namespace Smeaql.Where;
 
-internal sealed class WhereColumnsClause : FilterClause
+internal sealed class WhereColumnsClause : WhereClause
 {
     private readonly string _leftColumn,
         _rightColumn;
 
-    public WhereColumnsClause(string leftColumn, string rightColumn, FilterFlag filterFlag)
+    public WhereColumnsClause(string leftColumn, string rightColumn, WhereFlag whereFlag)
     {
         _leftColumn = leftColumn;
         _rightColumn = rightColumn;
-        FilterFlag = filterFlag;
+        WhereFlag = whereFlag;
     }
 
     public override void Compile<TCompiler>(TCompiler compiler, CompiledSqlQuery compiledQuery) =>

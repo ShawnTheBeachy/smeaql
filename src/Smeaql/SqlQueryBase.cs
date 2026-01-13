@@ -38,9 +38,15 @@ public abstract class SqlQueryBase<T>
 
     internal abstract T This();
 
+    public T Where(string column, object? value, string @operator = "=")
+    {
+        _clauses.Add(new WhereValueClause(column, value, @operator) { WhereFlag = WhereFlag.And });
+        return This();
+    }
+
     public T WhereColumns(string leftColumn, string rightColumn)
     {
-        _clauses.Add(new WhereColumnsClause(leftColumn, rightColumn, WhereFlag.And));
+        _clauses.Add(new WhereColumnsClause(leftColumn, rightColumn) { WhereFlag = WhereFlag.And });
         return This();
     }
 }

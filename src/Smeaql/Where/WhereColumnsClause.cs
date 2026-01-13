@@ -1,17 +1,21 @@
-﻿namespace Smeaql.Where;
+﻿using System.Text;
+
+namespace Smeaql.Where;
 
 internal sealed class WhereColumnsClause : WhereClause
 {
     private readonly string _leftColumn,
         _rightColumn;
 
-    public WhereColumnsClause(string leftColumn, string rightColumn, WhereFlag whereFlag)
+    public WhereColumnsClause(string leftColumn, string rightColumn)
     {
         _leftColumn = leftColumn;
         _rightColumn = rightColumn;
-        WhereFlag = whereFlag;
     }
 
-    public override void Compile<TCompiler>(TCompiler compiler, CompiledSqlQuery compiledQuery) =>
-        compiledQuery.Write($"{_leftColumn} = {_rightColumn}");
+    public override void Compile<TCompiler>(
+        TCompiler compiler,
+        StringBuilder stringBuilder,
+        ParameterFactory parameterFactory
+    ) => stringBuilder.Append($"{_leftColumn} = {_rightColumn}");
 }

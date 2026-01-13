@@ -1,4 +1,6 @@
-﻿namespace Smeaql.Select;
+﻿using System.Text;
+
+namespace Smeaql.Select;
 
 internal sealed class SelectColumnsClause : SelectClause
 {
@@ -9,14 +11,18 @@ internal sealed class SelectColumnsClause : SelectClause
         _columns = columns;
     }
 
-    public override void Compile<TCompiler>(TCompiler compiler, CompiledSqlQuery compiledQuery)
+    public override void Compile<TCompiler>(
+        TCompiler compiler,
+        StringBuilder stringBuilder,
+        ParameterFactory parameterFactory
+    )
     {
         for (var i = 0; i < _columns.Count; i++)
         {
-            compiledQuery.Write(_columns[i]);
+            stringBuilder.Append(_columns[i]);
 
             if (i < _columns.Count - 1)
-                compiledQuery.Write(',');
+                stringBuilder.Append(',');
         }
     }
 }

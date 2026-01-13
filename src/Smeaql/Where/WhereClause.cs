@@ -2,5 +2,5 @@
 
 internal abstract class WhereClause : SqlClause
 {
-    public WhereFlag WhereFlag { get; protected init; } = WhereFlag.And;
+    public WhereFlag WhereFlag { get; init; } = WhereFlag.And;
 }

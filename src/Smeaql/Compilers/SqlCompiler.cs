@@ -8,7 +8,9 @@ namespace Smeaql.Compilers;
 public abstract class SqlCompiler<T>
     where T : SqlCompiler<T>
 {
-    public string Compile<TQuery>(SqlQueryBase<TQuery> query)
+    public (string Sql, IReadOnlyDictionary<string, object?> Parameters) Compile<TQuery>(
+        SqlQueryBase<TQuery> query
+    )
         where TQuery : SqlQueryBase<TQuery>
     {
         var parameterFactory = new ParameterFactory();
@@ -16,7 +18,7 @@ public abstract class SqlCompiler<T>
         CompileSelect(query, stringBuilder, parameterFactory);
         CompileFrom(query, stringBuilder, parameterFactory);
         CompileWheres(query, stringBuilder, parameterFactory);
-        return stringBuilder.ToString();
+        return (stringBuilder.ToString(), parameterFactory.Parameters.AsReadOnly());
     }
 
     private void CompileFrom<TQuery>(

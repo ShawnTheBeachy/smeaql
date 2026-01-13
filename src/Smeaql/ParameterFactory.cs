@@ -3,13 +3,12 @@
 internal sealed class ParameterFactory
 {
     private int _counter;
-    private readonly List<(string Name, object? Value)> _parameters = [];
-    public IReadOnlyList<(string Name, object? Value)> Parameters => _parameters;
+    public Dictionary<string, object?> Parameters { get; } = [];
 
     public string CreateParameter(object? value)
     {
         var parameterName = $"@p{_counter++}";
-        _parameters.Add((parameterName, value));
+        Parameters[parameterName] = value;
         return parameterName;
     }
 }

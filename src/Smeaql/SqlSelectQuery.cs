@@ -1,4 +1,5 @@
-﻿using Smeaql.Select;
+﻿using Smeaql.Order;
+using Smeaql.Select;
 
 namespace Smeaql;
 
@@ -7,6 +8,18 @@ public sealed class SqlSelectQuery : SqlQueryBase<SqlSelectQuery>
     internal SqlSelectQuery(IEnumerable<SqlClause> clauses)
     {
         AddClauses(clauses);
+    }
+
+    public SqlSelectQuery OrderByAsc(params string[] columns)
+    {
+        AddClause(new OrderColumnsClause(columns) { Direction = OrderDirection.Asc });
+        return This();
+    }
+
+    public SqlSelectQuery OrderByDesc(params string[] columns)
+    {
+        AddClause(new OrderColumnsClause(columns) { Direction = OrderDirection.Desc });
+        return This();
     }
 
     public SqlSelectQuery Select(params string[] columns)

@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using Smeaql.From;
+using Smeaql.Order;
 using Smeaql.Select;
 using Smeaql.Where;
 
@@ -18,6 +19,7 @@ public abstract class SqlCompiler<T>
         CompileSelect(query, stringBuilder, parameterFactory);
         CompileFrom(query, stringBuilder, parameterFactory);
         CompileWheres(query, stringBuilder, parameterFactory);
+        CompileOrders(query, stringBuilder, parameterFactory);
         return (stringBuilder.ToString(), parameterFactory.Parameters.AsReadOnly());
     }
 
@@ -34,6 +36,27 @@ public abstract class SqlCompiler<T>
             clause.Compile(This(), stringBuilder, parameterFactory);
     }
 
+    private void CompileOrders<TQuery>(
+        SqlQueryBase<TQuery> query,
+        StringBuilder stringBuilder,
+        ParameterFactory parameterFactory
+    )
+        where TQuery : SqlQueryBase<TQuery>
+    {
+        var firstClause = true;
+
+        foreach (var clause in query.Clauses.OfType<OrderClause>())
+        {
+            if (!firstClause)
+                stringBuilder.Append(',');
+            else
+                stringBuilder.Append(" ORDER BY ");
+
+            clause.Compile(This(), stringBuilder, parameterFactory);
+            firstClause = false;
+        }
+    }
+
     private void CompileSelect<TQuery>(
         SqlQueryBase<TQuery> query,
         StringBuilder stringBuilder,
@@ -42,9 +65,16 @@ public abstract class SqlCompiler<T>
         where TQuery : SqlQueryBase<TQuery>
     {
         stringBuilder.Append("SELECT ");
+        var firstClause = true;
 
         foreach (var clause in query.Clauses.OfType<SelectClause>())
+        {
+            if (!firstClause)
+                stringBuilder.Append(',');
+
             clause.Compile(This(), stringBuilder, parameterFactory);
+            firstClause = false;
+        }
     }
 
     private void CompileWheres<TQuery>(

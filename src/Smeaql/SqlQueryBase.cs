@@ -26,16 +26,6 @@ public abstract class SqlQueryBase<T>
         return This();
     }
 
-    internal bool HasClause<TClause>()
-        where TClause : SqlClause
-    {
-        foreach (var clause in _clauses)
-            if (clause is TClause)
-                return true;
-
-        return false;
-    }
-
     internal abstract T This();
 
     public T Where(string column, object? value, string @operator = "=")

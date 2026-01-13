@@ -54,16 +54,14 @@ public abstract class SqlCompiler<T>
     )
         where TQuery : SqlQueryBase<TQuery>
     {
-        if (!query.HasClause<WhereClause>())
-            return;
-
-        stringBuilder.Append(" WHERE ");
         var firstClause = true;
 
         foreach (var clause in query.Clauses.OfType<WhereClause>())
         {
             if (!firstClause)
                 stringBuilder.Append($" {clause.WhereFlag.ToSql()} ");
+            else
+                stringBuilder.Append(" WHERE ");
 
             clause.Compile(This(), stringBuilder, parameterFactory);
             firstClause = false;

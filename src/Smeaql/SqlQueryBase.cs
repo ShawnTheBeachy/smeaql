@@ -1,4 +1,5 @@
 ﻿using Smeaql.From;
+using Smeaql.Join;
 using Smeaql.Where;
 
 namespace Smeaql;
@@ -23,6 +24,12 @@ public abstract class SqlQueryBase<T>
     public T From(string table)
     {
         AddOrReplaceClause<FromClause>(new FromTableClause(table));
+        return This();
+    }
+
+    public T LeftJoin(string table)
+    {
+        AddClause(new JoinClause(table, "LEFT"));
         return This();
     }
 

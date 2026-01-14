@@ -6,7 +6,8 @@ var query = new SqlQuery("Fruits")
     .Where("Name", "Apple")
     .Where("Color", "Red")
     .OrderByAsc("Id")
-    .OrderByDesc("Name", "Color");
+    .OrderByDesc("Name", "Color")
+    .LeftJoin("NutritionData");
 var compiledQuery = new SqlServerCompiler().Compile(query);
 Console.WriteLine(compiledQuery.Sql);
 

@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using Smeaql.From;
+using Smeaql.Join;
 using Smeaql.Order;
 using Smeaql.Select;
 using Smeaql.Where;
@@ -18,6 +19,7 @@ public abstract class SqlCompiler<T>
         var stringBuilder = new StringBuilder();
         CompileSelect(query, stringBuilder, parameterFactory);
         CompileFrom(query, stringBuilder, parameterFactory);
+        CompileJoins(query, stringBuilder, parameterFactory);
         CompileWheres(query, stringBuilder, parameterFactory);
         CompileOrders(query, stringBuilder, parameterFactory);
         return (stringBuilder.ToString(), parameterFactory.Parameters.AsReadOnly());
@@ -33,6 +35,17 @@ public abstract class SqlCompiler<T>
         stringBuilder.Append(" FROM ");
 
         foreach (var clause in query.Clauses.OfType<FromClause>())
+            clause.Compile(This(), stringBuilder, parameterFactory);
+    }
+
+    private void CompileJoins<TQuery>(
+        SqlQueryBase<TQuery> query,
+        StringBuilder stringBuilder,
+        ParameterFactory parameterFactory
+    )
+        where TQuery : SqlQueryBase<TQuery>
+    {
+        foreach (var clause in query.Clauses.OfType<JoinClause>())
             clause.Compile(This(), stringBuilder, parameterFactory);
     }
 

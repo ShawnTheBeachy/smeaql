@@ -1,16 +1,19 @@
 using System.Text;
+using Smeaql.From;
+using Smeaql.Where;
 
 namespace Smeaql.Join;
 
 internal sealed class JoinClause : SqlClause
 {
-    private readonly string _table;
-    private readonly string? _type;
+    private readonly FromClause _from;
+    private readonly List<WhereClause> _wheres = [];
 
-    public JoinClause(string table, string? type = null)
+    public string Type { get; init; } = "INNER";
+
+    public JoinClause(string table)
     {
-        _table = table;
-        _type = type ?? "INNER";
+        _from = new FromTableClause(table);
     }
 
     public override void Compile<TCompiler>(
@@ -19,7 +22,26 @@ internal sealed class JoinClause : SqlClause
         ParameterFactory parameterFactory
     )
     {
-        if (!string.IsNullOrWhiteSpace(_type))
-            stringBuilder.Append($" {_type} {_table}");
+        stringBuilder.Append($"{Type} JOIN ");
+        _from.Compile(compiler, stringBuilder, parameterFactory);
+
+        if (_wheres.Count < 1)
+            return;
+
+        stringBuilder.Append(" ON ");
+
+        for (var i = 0; i < _wheres.Count; i++)
+        {
+            _wheres[i].Compile(compiler, stringBuilder, parameterFactory);
+
+            if (i < _wheres.Count - 1)
+                stringBuilder.Append(" AND ");
+        }
     }
+
+    public void On(string column, object? value, string @operator = "=") =>
+        _wheres.Add(new WhereValueClause(column, value) { Operator = @operator });
+
+    public void OnColumns(string left, string right, string @operator = "=") =>
+        _wheres.Add(new WhereColumnsClause(left, right) { Operator = @operator });
 }

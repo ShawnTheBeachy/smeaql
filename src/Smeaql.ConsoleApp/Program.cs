@@ -1,4 +1,9 @@
-﻿using Smeaql;
+﻿using BenchmarkDotNet.Running;
+using Smeaql.ConsoleApp;
+
+BenchmarkRunner.Run<Benchmarks>();
+
+/*using Smeaql;
 using Smeaql.Compilers;
 
 var query = new SqlQuery("Fruits")
@@ -12,4 +17,4 @@ var compiledQuery = new SqlServerCompiler().Compile(query);
 Console.WriteLine(compiledQuery.Sql);
 
 foreach (var parameter in compiledQuery.Parameters)
-    Console.WriteLine($"{parameter.Key}: {parameter.Value}");
+    Console.WriteLine($"{parameter.Key}: {parameter.Value}");*/

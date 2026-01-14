@@ -17,5 +17,5 @@ internal sealed class WhereColumnsClause : WhereClause
         TCompiler compiler,
         StringBuilder stringBuilder,
         ParameterFactory parameterFactory
-    ) => stringBuilder.Append($"{_leftColumn} = {_rightColumn}");
+    ) => stringBuilder.Append($"{_leftColumn} {Operator} {_rightColumn}");
 }

@@ -22,6 +22,17 @@ public abstract class SqlCompiler<T>
         CompileJoins(query, stringBuilder, parameterFactory);
         CompileWheres(query, stringBuilder, parameterFactory);
         CompileOrders(query, stringBuilder, parameterFactory);
+
+        /*this.CompileColumns(ctx),
+                    this.CompileFrom(ctx),
+                    this.CompileJoins(ctx),
+                    this.CompileWheres(ctx),
+                    this.CompileGroups(ctx),
+                    this.CompileHaving(ctx),
+                    this.CompileOrders(ctx),
+                    this.CompileLimit(ctx),
+                    this.CompileUnion(ctx),*/
+
         return (stringBuilder.ToString(), parameterFactory.Parameters.AsReadOnly());
     }
 

@@ -1,4 +1,5 @@
 ﻿using Smeaql.From;
+using Smeaql.Helpers;
 using Smeaql.Join;
 using Smeaql.Where;
 
@@ -7,29 +8,25 @@ namespace Smeaql;
 public abstract class SqlQueryBase<T>
     where T : SqlQueryBase<T>
 {
-    private readonly List<SqlClause> _clauses = [];
-    internal IReadOnlyList<SqlClause> Clauses => _clauses;
-
-    internal void AddClause(SqlClause clause) => _clauses.Add(clause);
-
-    internal void AddClauses(IEnumerable<SqlClause> clauses) => _clauses.AddRange(clauses);
-
-    internal void AddOrReplaceClause<TClause>(TClause clause)
-        where TClause : SqlClause
-    {
-        _clauses.RemoveAll(x => x is TClause);
-        _clauses.Add(clause);
-    }
+    internal List<SqlClause> Clauses { get; } = [];
 
     public T From(string table)
     {
-        AddOrReplaceClause<FromClause>(new FromTableClause(table));
+        Clauses.Replace(new FromTableClause(table));
         return This();
     }
 
-    public T LeftJoin(string table)
+    public T LeftJoin(string table, string left, string right, string @operator = "=")
     {
-        AddClause(new JoinClause(table, "LEFT"));
+        var joinClause = new JoinClause(table);
+        joinClause.OnColumns(left, right, @operator);
+        return This();
+    }
+
+    public T LeftJoin(string table, Action<JoinConditionBuilder> join)
+    {
+        var joinClause = new JoinClause(table);
+        join(new JoinConditionBuilder(joinClause));
         return This();
     }
 
@@ -37,13 +34,21 @@ public abstract class SqlQueryBase<T>
 
     public T Where(string column, object? value, string @operator = "=")
     {
-        _clauses.Add(new WhereValueClause(column, value, @operator) { WhereFlag = WhereFlag.And });
+        Clauses.Add(
+            new WhereValueClause(column, value) { Operator = @operator, WhereFlag = WhereFlag.And }
+        );
         return This();
     }
 
-    public T WhereColumns(string leftColumn, string rightColumn)
+    public T WhereColumns(string leftColumn, string rightColumn, string @operator = "=")
     {
-        _clauses.Add(new WhereColumnsClause(leftColumn, rightColumn) { WhereFlag = WhereFlag.And });
+        Clauses.Add(
+            new WhereColumnsClause(leftColumn, rightColumn)
+            {
+                Operator = @operator,
+                WhereFlag = WhereFlag.And,
+            }
+        );
         return This();
     }
 }

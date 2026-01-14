@@ -32,7 +32,13 @@ public abstract class SqlQueryBase<T>
 
     internal abstract T This();
 
-    public T Where(string column, object? value, string @operator = "=")
+    public T Where(string column, object? value)
+    {
+        Clauses.Add(new WhereValueClause(column, value) { WhereFlag = WhereFlag.And });
+        return This();
+    }
+
+    public T Where(string column, string @operator, object? value)
     {
         Clauses.Add(
             new WhereValueClause(column, value) { Operator = @operator, WhereFlag = WhereFlag.And }
@@ -40,7 +46,13 @@ public abstract class SqlQueryBase<T>
         return This();
     }
 
-    public T WhereColumns(string leftColumn, string rightColumn, string @operator = "=")
+    public T WhereColumns(string leftColumn, string rightColumn)
+    {
+        Clauses.Add(new WhereColumnsClause(leftColumn, rightColumn) { WhereFlag = WhereFlag.And });
+        return This();
+    }
+
+    public T WhereColumns(string leftColumn, string @operator, string rightColumn)
     {
         Clauses.Add(
             new WhereColumnsClause(leftColumn, rightColumn)

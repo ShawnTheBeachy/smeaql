@@ -11,4 +11,14 @@ internal sealed class ParameterFactory
         Parameters[parameterName] = value;
         return $"@{parameterName}";
     }
+
+    public IEnumerable<string> CreateParameters(IEnumerable<object?> values)
+    {
+        foreach (var value in values)
+        {
+            var parameterName = $"p{_counter++}";
+            Parameters[parameterName] = value;
+            yield return $"@{parameterName}";
+        }
+    }
 }

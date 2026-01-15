@@ -36,7 +36,7 @@ public sealed class WhereValueClauseTests
     }
 
     [Test]
-    public async Task Parameter_ShouldBeAdded_WhenUsingWhere(CancellationToken cancellationToken)
+    public async Task Parameter_ShouldBeCreated_WhenUsingWhere(CancellationToken cancellationToken)
     {
         // Act.
         var query = new SqlQuery("Books").Where("Rating", 5);

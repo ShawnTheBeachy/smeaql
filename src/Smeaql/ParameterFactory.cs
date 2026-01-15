@@ -7,8 +7,8 @@ internal sealed class ParameterFactory
 
     public string CreateParameter(object? value)
     {
-        var parameterName = $"@p{_counter++}";
+        var parameterName = $"p{_counter++}";
         Parameters[parameterName] = value;
-        return parameterName;
+        return $"@{parameterName}";
     }
 }

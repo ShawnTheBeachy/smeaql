@@ -3,5 +3,7 @@
     <Project Path="src/Smeaql.ConsoleApp/Smeaql.ConsoleApp.csproj" />
     <Project Path="src/Smeaql/Smeaql.csproj" />
   </Folder>
-  <Folder Name="/test/" />
+  <Folder Name="/test/">
+    <Project Path="Smeaql.Tests.Unit/Smeaql.Tests.Unit.csproj" />
+  </Folder>
 </Solution>

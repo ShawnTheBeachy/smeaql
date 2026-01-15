@@ -18,14 +18,28 @@ public abstract class SqlQueryBase<T>
 
     public T LeftJoin(string table, string left, string right, string @operator = "=")
     {
-        var joinClause = new JoinClause(table);
+        var joinClause = new JoinClause(table) { Type = "LEFT" };
         joinClause.OnColumns(left, right, @operator);
         return This();
     }
 
     public T LeftJoin(string table, Action<JoinConditionBuilder> join)
     {
-        var joinClause = new JoinClause(table);
+        var joinClause = new JoinClause(table) { Type = "LEFT" };
+        join(new JoinConditionBuilder(joinClause));
+        return This();
+    }
+
+    public T RightJoin(string table, string left, string right, string @operator = "=")
+    {
+        var joinClause = new JoinClause(table) { Type = "RIGHT" };
+        joinClause.OnColumns(left, right, @operator);
+        return This();
+    }
+
+    public T RightJoin(string table, Action<JoinConditionBuilder> join)
+    {
+        var joinClause = new JoinClause(table) { Type = "RIGHT" };
         join(new JoinConditionBuilder(joinClause));
         return This();
     }

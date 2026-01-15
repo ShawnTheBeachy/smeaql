@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using Microsoft.Extensions.ObjectPool;
 using Smeaql.From;
 using Smeaql.Join;
 using Smeaql.Order;
@@ -16,24 +17,32 @@ public abstract class SqlCompiler<T>
         where TQuery : SqlQueryBase<TQuery>
     {
         var parameterFactory = new ParameterFactory();
-        var stringBuilder = new StringBuilder();
-        CompileSelect(query, stringBuilder, parameterFactory);
-        CompileFrom(query, stringBuilder, parameterFactory);
-        CompileJoins(query, stringBuilder, parameterFactory);
-        CompileWheres(query, stringBuilder, parameterFactory);
-        CompileOrders(query, stringBuilder, parameterFactory);
+        var stringBuilder = ObjectPools.StringBuilders.Get();
 
-        /*this.CompileColumns(ctx),
-                    this.CompileFrom(ctx),
-                    this.CompileJoins(ctx),
-                    this.CompileWheres(ctx),
-                    this.CompileGroups(ctx),
-                    this.CompileHaving(ctx),
-                    this.CompileOrders(ctx),
-                    this.CompileLimit(ctx),
-                    this.CompileUnion(ctx),*/
+        try
+        {
+            CompileSelect(query, stringBuilder, parameterFactory);
+            CompileFrom(query, stringBuilder, parameterFactory);
+            CompileJoins(query, stringBuilder, parameterFactory);
+            CompileWheres(query, stringBuilder, parameterFactory);
+            CompileOrders(query, stringBuilder, parameterFactory);
+            return (stringBuilder.ToString(), parameterFactory.Parameters.AsReadOnly());
+        }
+        finally
+        {
+            ObjectPools.StringBuilders.Return(stringBuilder);
+        }
 
-        return (stringBuilder.ToString(), parameterFactory.Parameters.AsReadOnly());
+        /* Selects
+           Froms
+           Joins
+           Wheres
+           Groups
+           Havings
+           Orders
+           Limits
+           Unions
+        */
     }
 
     private void CompileFrom<TQuery>(
@@ -88,7 +97,14 @@ public abstract class SqlCompiler<T>
     )
         where TQuery : SqlQueryBase<TQuery>
     {
-        stringBuilder.Append("SELECT ");
+        try
+        {
+            stringBuilder.Append("SELECT ");
+        }
+        catch (Exception ex)
+        {
+            _ = ex;
+        }
         var firstClause = true;
 
         foreach (var clause in query.Clauses.OfType<SelectClause>())
@@ -99,6 +115,9 @@ public abstract class SqlCompiler<T>
             clause.Compile(This(), stringBuilder, parameterFactory);
             firstClause = false;
         }
+
+        if (firstClause)
+            stringBuilder.Append('*');
     }
 
     private void CompileWheres<TQuery>(

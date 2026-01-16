@@ -50,4 +50,18 @@ public sealed class WhereValueClauseTests
         await Assert.That(compiledQuery.Parameters.First().Key).IsEqualTo("p0");
         await Assert.That(compiledQuery.Parameters.First().Value).IsEqualTo(5);
     }
+
+    [Test]
+    public async Task Parameter_ShouldBeEqualToOne_WhenUsingWhereTrue(CancellationToken cancellationToken)
+    {
+        // Act.
+        var query = new SqlQuery("Books").WhereTrue("Rating");
+        
+        // Assert.
+        using var asserts = Assert.Multiple();
+        await Assert.That(query.Clauses.OfType<WhereValueClause>().Count()).IsEqualTo(1);
+        var compiledQuery = new SqlServerCompiler().Compile(query);
+        await Assert.That(compiledQuery.Sql).IsEqualTo("SELECT * FROM Books WHERE Rating = @p0");
+        await Assert.That(compiledQuery.Parameters.First().Value).IsEqualTo(1);
+    }
 }

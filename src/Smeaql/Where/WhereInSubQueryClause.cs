@@ -5,13 +5,14 @@ namespace Smeaql.Where;
 internal sealed class WhereInSubQueryClause : WhereClause
 {
     private readonly string _column;
-    private readonly string _table;
+    private readonly SqlSelectQuery _subQuery;
     private readonly IReadOnlyList<object?> _values;
+    
 
-    public WhereInSubQueryClause(string column, string table, params object?[] values)
+    public WhereInSubQueryClause(SqlSelectQuery subQuery, string column, params object?[] values)
     {
+        _subQuery = subQuery;
         _column = column;
-        _table = table;
         _values = values;
     }
 
@@ -21,6 +22,6 @@ internal sealed class WhereInSubQueryClause : WhereClause
         ParameterFactory parameterFactory
     ) =>
         stringBuilder.Append(
-            $"{_column} IN ({new SqlQuery(_table).Select(_column).WhereColumns()})"
+            $"({_subQuery.Where(_column, _values)})"
         );
 }

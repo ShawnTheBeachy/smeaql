@@ -78,6 +78,12 @@ public abstract class SqlQueryBase<T>
         return This();
     }
 
+    public T WhereFalse(string column)
+    {
+        Clauses.Add(new WhereValueClause(column, 0));
+        return This();
+    }
+
     public T WhereIn(string column, params object?[] values)
     {
         Clauses.Add(new WhereInClause(column, values));

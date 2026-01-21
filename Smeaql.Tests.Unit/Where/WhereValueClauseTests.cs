@@ -52,16 +52,34 @@ public sealed class WhereValueClauseTests
     }
 
     [Test]
-    public async Task Parameter_ShouldBeEqualToOne_WhenUsingWhereTrue(CancellationToken cancellationToken)
+    public async Task Parameter_ShouldBeEqualToOne_WhenUsingWhereTrue(
+        CancellationToken cancellationToken
+    )
     {
         // Act.
-        var query = new SqlQuery("Books").WhereTrue("Rating");
-        
+        var query = new SqlQuery("Books").WhereTrue("Favorite");
+
         // Assert.
         using var asserts = Assert.Multiple();
         await Assert.That(query.Clauses.OfType<WhereValueClause>().Count()).IsEqualTo(1);
         var compiledQuery = new SqlServerCompiler().Compile(query);
-        await Assert.That(compiledQuery.Sql).IsEqualTo("SELECT * FROM Books WHERE Rating = @p0");
+        await Assert.That(compiledQuery.Sql).IsEqualTo("SELECT * FROM Books WHERE Favorite = @p0");
         await Assert.That(compiledQuery.Parameters.First().Value).IsEqualTo(1);
+    }
+
+    [Test]
+    public async Task Parameter_ShouldBeEqualToZero_WhenUsingWhereFalse(
+        CancellationToken cancellationToken
+    )
+    {
+        // Act.
+        var query = new SqlQuery("Books").WhereFalse("Favorite");
+
+        // Assert.
+        using var asserts = Assert.Multiple();
+        await Assert.That(query.Clauses.OfType<WhereValueClause>().Count()).IsEqualTo(1);
+        var compiledQuery = new SqlServerCompiler().Compile(query);
+        await Assert.That(compiledQuery.Sql).IsEqualTo("SELECT * FROM Books WHERE Favorite = @p0");
+        await Assert.That(compiledQuery.Parameters.First().Value).IsEqualTo(0);
     }
 }

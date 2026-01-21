@@ -6,7 +6,7 @@ namespace Smeaql.Tests.Unit.Where;
 public sealed class WhereValueClauseTests
 {
     [Test]
-    public async Task CustomOperator_ShouldBeUsed_WhenProvided(CancellationToken cancellationToken)
+    public async Task CustomOperator_ShouldBeUsed_WhenProvided()
     {
         // Act.
         var query = new SqlQuery("Books").Where("Rating", ">", 3);
@@ -20,9 +20,7 @@ public sealed class WhereValueClauseTests
     }
 
     [Test]
-    public async Task EqualsOperator_ShouldBeUsed_WhenOperatorNotSpecified(
-        CancellationToken cancellationToken
-    )
+    public async Task EqualsOperator_ShouldBeUsed_WhenOperatorNotSpecified()
     {
         // Act.
         var query = new SqlQuery("Books").Where("Rating", 5);
@@ -36,7 +34,7 @@ public sealed class WhereValueClauseTests
     }
 
     [Test]
-    public async Task Parameter_ShouldBeCreated_WhenUsingWhere(CancellationToken cancellationToken)
+    public async Task Parameter_ShouldBeCreated_WhenUsingWhere()
     {
         // Act.
         var query = new SqlQuery("Books").Where("Rating", 5);
@@ -52,9 +50,7 @@ public sealed class WhereValueClauseTests
     }
 
     [Test]
-    public async Task Parameter_ShouldBeEqualToOne_WhenUsingWhereTrue(
-        CancellationToken cancellationToken
-    )
+    public async Task Parameter_ShouldBeEqualToOne_WhenUsingWhereTrue()
     {
         // Act.
         var query = new SqlQuery("Books").WhereTrue("Favorite");
@@ -68,9 +64,7 @@ public sealed class WhereValueClauseTests
     }
 
     [Test]
-    public async Task Parameter_ShouldBeEqualToZero_WhenUsingWhereFalse(
-        CancellationToken cancellationToken
-    )
+    public async Task Parameter_ShouldBeEqualToZero_WhenUsingWhereFalse()
     {
         // Act.
         var query = new SqlQuery("Books").WhereFalse("Favorite");

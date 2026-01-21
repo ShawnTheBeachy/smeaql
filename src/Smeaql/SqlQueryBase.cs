@@ -53,6 +53,24 @@ public abstract class SqlQueryBase<T>
         return This();
     }
 
+    public T OrWhere(string column, object? value) => OrWhere(column, "=", value);
+
+    public T OrWhere(string column, string @operator, object? value) =>
+        WherePrivate(column, @operator, value, WhereFlag.Or);
+
+    public T OrWhereColumns(string leftColumn, string rightColumn) =>
+        OrWhereColumns(leftColumn, "=", rightColumn);
+
+    public T OrWhereColumns(string leftColumn, string @operator, string rightColumn) =>
+        WhereColumnsPrivate(leftColumn, @operator, rightColumn, WhereFlag.Or);
+
+    public T OrWhereFalse(string column) => WhereFalsePrivate(column, WhereFlag.Or);
+
+    public T OrWhereIn(string column, params object?[] values) =>
+        WhereInPrivate(column, values, WhereFlag.Or);
+
+    public T OrWhereTrue(string column) => WhereTruePrivate(column, WhereFlag.Or);
+
     public T RightJoin(string table, string left, string right) =>
         RightJoin(table, left, "=", right);
 
@@ -74,53 +92,64 @@ public abstract class SqlQueryBase<T>
 
     internal abstract T This();
 
-    public T Where(string column, object? value)
-    {
-        Clauses.Add(new WhereValueClause(column, value) { WhereFlag = WhereFlag.And });
-        return This();
-    }
+    public T Where(string column, object? value) => Where(column, "=", value);
 
-    public T Where(string column, string @operator, object? value)
-    {
-        Clauses.Add(
-            new WhereValueClause(column, value) { Operator = @operator, WhereFlag = WhereFlag.And }
-        );
-        return This();
-    }
+    public T Where(string column, string @operator, object? value) =>
+        WherePrivate(column, @operator, value, WhereFlag.And);
 
-    public T WhereColumns(string leftColumn, string rightColumn)
-    {
-        Clauses.Add(new WhereColumnsClause(leftColumn, rightColumn) { WhereFlag = WhereFlag.And });
-        return This();
-    }
+    public T WhereColumns(string leftColumn, string rightColumn) =>
+        WhereColumns(leftColumn, "=", rightColumn);
 
-    public T WhereColumns(string leftColumn, string @operator, string rightColumn)
+    public T WhereColumns(string leftColumn, string @operator, string rightColumn) =>
+        WhereColumnsPrivate(leftColumn, @operator, rightColumn, WhereFlag.And);
+
+    private T WhereColumnsPrivate(
+        string leftColumn,
+        string @operator,
+        string rightColumn,
+        WhereFlag whereFlag
+    )
     {
         Clauses.Add(
             new WhereColumnsClause(leftColumn, rightColumn)
             {
                 Operator = @operator,
-                WhereFlag = WhereFlag.And,
+                WhereFlag = whereFlag,
             }
         );
         return This();
     }
 
-    public T WhereFalse(string column)
+    public T WhereFalse(string column) => WhereFalsePrivate(column, WhereFlag.And);
+
+    private T WhereFalsePrivate(string column, WhereFlag whereFlag)
     {
-        Clauses.Add(new WhereValueClause(column, 0));
+        Clauses.Add(new WhereValueClause(column, 0) { WhereFlag = whereFlag });
         return This();
     }
 
-    public T WhereIn(string column, params object?[] values)
+    public T WhereIn(string column, params object?[] values) =>
+        WhereInPrivate(column, values, WhereFlag.And);
+
+    private T WhereInPrivate(string column, IReadOnlyList<object?> values, WhereFlag whereFlag)
     {
-        Clauses.Add(new WhereInClause(column, values));
+        Clauses.Add(new WhereInClause(column, values) { WhereFlag = whereFlag });
         return This();
     }
 
-    public T WhereTrue(string column)
+    private T WherePrivate(string column, string @operator, object? value, WhereFlag whereFlag)
     {
-        Clauses.Add(new WhereValueClause(column, 1));
+        Clauses.Add(
+            new WhereValueClause(column, value) { Operator = @operator, WhereFlag = whereFlag }
+        );
+        return This();
+    }
+
+    public T WhereTrue(string column) => WhereTruePrivate(column, WhereFlag.And);
+
+    private T WhereTruePrivate(string column, WhereFlag whereFlag)
+    {
+        Clauses.Add(new WhereValueClause(column, 1) { WhereFlag = whereFlag });
         return This();
     }
 }

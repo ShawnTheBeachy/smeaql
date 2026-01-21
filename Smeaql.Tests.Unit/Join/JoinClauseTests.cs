@@ -6,9 +6,7 @@ namespace Smeaql.Tests.Unit.Join;
 public sealed class JoinClauseTests
 {
     [Test]
-    public async Task CustomOperator_ShouldBeUsed_WhenSpecifiedInInnerJoin(
-        CancellationToken cancellationToken
-    )
+    public async Task CustomOperator_ShouldBeUsed_WhenSpecifiedInInnerJoin()
     {
         // Act.
         var query = new SqlQuery("Books").InnerJoin("Authors", "Authors.Id", ">", "Books.AuthorId");
@@ -21,9 +19,7 @@ public sealed class JoinClauseTests
     }
 
     [Test]
-    public async Task CustomOperator_ShouldBeUsed_WhenSpecifiedInLeftJoin(
-        CancellationToken cancellationToken
-    )
+    public async Task CustomOperator_ShouldBeUsed_WhenSpecifiedInLeftJoin()
     {
         // Act.
         var query = new SqlQuery("Books").LeftJoin("Authors", "Authors.Id", ">", "Books.AuthorId");
@@ -36,9 +32,7 @@ public sealed class JoinClauseTests
     }
 
     [Test]
-    public async Task CustomOperator_ShouldBeUsed_WhenSpecifiedInRightJoin(
-        CancellationToken cancellationToken
-    )
+    public async Task CustomOperator_ShouldBeUsed_WhenSpecifiedInRightJoin()
     {
         // Act.
         var query = new SqlQuery("Books").RightJoin("Authors", "Authors.Id", ">", "Books.AuthorId");
@@ -51,9 +45,7 @@ public sealed class JoinClauseTests
     }
 
     [Test]
-    public async Task JoinType_ShouldBeInner_WhenInnerJoinIsUsed(
-        CancellationToken cancellationToken
-    )
+    public async Task JoinType_ShouldBeInner_WhenInnerJoinIsUsed()
     {
         // Act.
         var query = new SqlQuery("Books").InnerJoin("Authors", "Books.AuthorId", "Authors.Id");
@@ -69,7 +61,7 @@ public sealed class JoinClauseTests
     }
 
     [Test]
-    public async Task JoinType_ShouldBeLeft_WhenLeftJoinIsUsed(CancellationToken cancellationToken)
+    public async Task JoinType_ShouldBeLeft_WhenLeftJoinIsUsed()
     {
         // Act.
         var query = new SqlQuery("Books").LeftJoin("Authors", "Books.AuthorId", "Authors.Id");
@@ -85,9 +77,7 @@ public sealed class JoinClauseTests
     }
 
     [Test]
-    public async Task JoinType_ShouldBeRight_WhenRightJoinIsUsed(
-        CancellationToken cancellationToken
-    )
+    public async Task JoinType_ShouldBeRight_WhenRightJoinIsUsed()
     {
         // Act.
         var query = new SqlQuery("Books").RightJoin("Authors", "Books.AuthorId", "Authors.Id");
@@ -103,9 +93,7 @@ public sealed class JoinClauseTests
     }
 
     [Test]
-    public async Task MultipleConditions_ShouldBeAdded_WhenCallbackOverloadIsUsedWithMultipleConditions(
-        CancellationToken cancellationToken
-    )
+    public async Task MultipleConditions_ShouldBeAdded_WhenCallbackOverloadIsUsedWithMultipleConditions()
     {
         // Act.
         var query = new SqlQuery("Books").LeftJoin(

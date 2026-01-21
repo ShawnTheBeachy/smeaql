@@ -16,10 +16,32 @@ public abstract class SqlQueryBase<T>
         return This();
     }
 
-    public T LeftJoin(string table, string left, string right, string @operator = "=")
+    public T InnerJoin(string table, string left, string right) =>
+        InnerJoin(table, left, "=", right);
+
+    public T InnerJoin(string table, string left, string @operator, string right)
+    {
+        var joinClause = new JoinClause(table) { Type = "INNER" };
+        joinClause.OnColumns(left, right, @operator);
+        Clauses.Add(joinClause);
+        return This();
+    }
+
+    public T InnerJoin(string table, Action<JoinConditionBuilder> join)
+    {
+        var joinClause = new JoinClause(table) { Type = "INNER" };
+        join(new JoinConditionBuilder(joinClause));
+        Clauses.Add(joinClause);
+        return This();
+    }
+
+    public T LeftJoin(string table, string left, string right) => LeftJoin(table, left, "=", right);
+
+    public T LeftJoin(string table, string left, string @operator, string right)
     {
         var joinClause = new JoinClause(table) { Type = "LEFT" };
         joinClause.OnColumns(left, right, @operator);
+        Clauses.Add(joinClause);
         return This();
     }
 
@@ -27,13 +49,18 @@ public abstract class SqlQueryBase<T>
     {
         var joinClause = new JoinClause(table) { Type = "LEFT" };
         join(new JoinConditionBuilder(joinClause));
+        Clauses.Add(joinClause);
         return This();
     }
 
-    public T RightJoin(string table, string left, string right, string @operator = "=")
+    public T RightJoin(string table, string left, string right) =>
+        RightJoin(table, left, "=", right);
+
+    public T RightJoin(string table, string left, string @operator, string right)
     {
         var joinClause = new JoinClause(table) { Type = "RIGHT" };
         joinClause.OnColumns(left, right, @operator);
+        Clauses.Add(joinClause);
         return This();
     }
 
@@ -41,6 +68,7 @@ public abstract class SqlQueryBase<T>
     {
         var joinClause = new JoinClause(table) { Type = "RIGHT" };
         join(new JoinConditionBuilder(joinClause));
+        Clauses.Add(joinClause);
         return This();
     }
 

@@ -1,5 +1,4 @@
 ﻿using System.Text;
-using Microsoft.Extensions.ObjectPool;
 using Smeaql.From;
 using Smeaql.Join;
 using Smeaql.Order;
@@ -66,7 +65,10 @@ public abstract class SqlCompiler<T>
         where TQuery : SqlQueryBase<TQuery>
     {
         foreach (var clause in query.Clauses.OfType<JoinClause>())
+        {
+            stringBuilder.Append(' ');
             clause.Compile(This(), stringBuilder, parameterFactory);
+        }
     }
 
     private void CompileOrders<TQuery>(

@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using Smeaql.From;
+using Smeaql.Group;
 using Smeaql.Join;
 using Smeaql.Order;
 using Smeaql.Select;
@@ -24,6 +25,7 @@ public abstract class SqlCompiler<T>
             CompileFrom(query, stringBuilder, parameterFactory);
             CompileJoins(query, stringBuilder, parameterFactory);
             CompileWheres(query, stringBuilder, parameterFactory);
+            CompileGroups(query, stringBuilder, parameterFactory);
             CompileOrders(query, stringBuilder, parameterFactory);
             return (stringBuilder.ToString(), parameterFactory.Parameters.AsReadOnly());
         }
@@ -55,6 +57,27 @@ public abstract class SqlCompiler<T>
 
         foreach (var clause in query.Clauses.OfType<FromClause>())
             clause.Compile(This(), stringBuilder, parameterFactory);
+    }
+
+    private void CompileGroups<TQuery>(
+        SqlQueryBase<TQuery> query,
+        StringBuilder stringBuilder,
+        ParameterFactory parameterFactory
+    )
+        where TQuery : SqlQueryBase<TQuery>
+    {
+        var firstClause = true;
+
+        foreach (var clause in query.Clauses.OfType<GroupClause>())
+        {
+            if (!firstClause)
+                stringBuilder.Append(',');
+            else
+                stringBuilder.Append(" GROUP BY ");
+
+            clause.Compile(This(), stringBuilder, parameterFactory);
+            firstClause = false;
+        }
     }
 
     private void CompileJoins<TQuery>(

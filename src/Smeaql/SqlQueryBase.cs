@@ -83,4 +83,10 @@ public abstract class SqlQueryBase<T>
         Clauses.Add(new WhereInClause(column, values));
         return This();
     }
+
+    public T WhereTrue(string column)
+    {
+        Clauses.Add(new WhereValueClause(column, 1));
+        return This();
+    }
 }

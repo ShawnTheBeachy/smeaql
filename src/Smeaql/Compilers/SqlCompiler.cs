@@ -1,13 +1,16 @@
-﻿using System.Text;
+﻿using System.ComponentModel;
+using System.Text;
 using Smeaql.From;
 using Smeaql.Group;
 using Smeaql.Join;
+using Smeaql.Limit;
 using Smeaql.Order;
 using Smeaql.Select;
 using Smeaql.Where;
 
 namespace Smeaql.Compilers;
 
+[EditorBrowsable(EditorBrowsableState.Never)]
 public abstract class SqlCompiler<T>
     where T : SqlCompiler<T>
 {
@@ -26,24 +29,16 @@ public abstract class SqlCompiler<T>
             CompileJoins(query, stringBuilder, parameterFactory);
             CompileWheres(query, stringBuilder, parameterFactory);
             CompileGroups(query, stringBuilder, parameterFactory);
+            // CompileHavings
             CompileOrders(query, stringBuilder, parameterFactory);
+            CompileLimit(query, stringBuilder, parameterFactory);
+            // CompileUnions
             return (stringBuilder.ToString(), parameterFactory.Parameters.AsReadOnly());
         }
         finally
         {
             ObjectPools.StringBuilders.Return(stringBuilder);
         }
-
-        /* Selects
-           Froms
-           Joins
-           Wheres
-           Groups
-           Havings
-           Orders
-           Limits
-           Unions
-        */
     }
 
     private void CompileFrom<TQuery>(
@@ -91,6 +86,21 @@ public abstract class SqlCompiler<T>
         {
             stringBuilder.Append(' ');
             clause.Compile(This(), stringBuilder, parameterFactory);
+        }
+    }
+
+    private void CompileLimit<TQuery>(
+        SqlQueryBase<TQuery> query,
+        StringBuilder stringBuilder,
+        ParameterFactory parameterFactory
+    )
+        where TQuery : SqlQueryBase<TQuery>
+    {
+        foreach (var clause in query.Clauses.OfType<LimitClause>())
+        {
+            stringBuilder.Append(' ');
+            clause.Compile(This(), stringBuilder, parameterFactory);
+            break;
         }
     }
 

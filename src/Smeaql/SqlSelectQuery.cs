@@ -1,4 +1,6 @@
 ﻿using Smeaql.Group;
+using Smeaql.Helpers;
+using Smeaql.Limit;
 using Smeaql.Order;
 using Smeaql.Select;
 
@@ -26,6 +28,13 @@ public sealed class SqlSelectQuery : SqlQueryBase<SqlSelectQuery>
     public SqlSelectQuery OrderByDesc(params string[] columns)
     {
         Clauses.Add(new OrderColumnsClause(columns) { Direction = OrderDirection.Desc });
+        return This();
+    }
+
+    public SqlSelectQuery Page(int page, int size)
+    {
+        page = page < 1 ? 1 : page;
+        Clauses.Replace(new LimitClause(size, (page - 1) * size));
         return This();
     }
 

@@ -7,7 +7,7 @@ internal sealed class WhereInClause : WhereClause
     private readonly string _column;
     private readonly IReadOnlyList<object?> _values;
 
-    public WhereInClause(string column, params object?[] values)
+    public WhereInClause(string column, IReadOnlyList<object?> values)
     {
         _column = column;
         _values = values;

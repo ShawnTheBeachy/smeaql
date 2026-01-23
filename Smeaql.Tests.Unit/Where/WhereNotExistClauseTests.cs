@@ -11,14 +11,14 @@ public sealed class WhereNotExistClauseTests
         //Act.
         const string customerId = "1234";
         var query = new SqlQuery("Customers").Select("FirstName", "LastName")
-            .WhereNotExists(new SqlQuery("InactiveCustomers").Where("CustomerId", customerId));
+            .WhereNotExists("Customers", "CustomerId", customerId);
         // Assert.
         using var asserts = Assert.Multiple();
         await Assert.That(query.Clauses.OfType<WhereNotExistsClause>().Count()).IsEqualTo(1);
         var compiledQuery = new SqlServerCompiler().Compile(query);
         await Assert
             .That(compiledQuery.Sql)
-            .IsEqualTo("SELECT FirstName,LastName FROM Customers WHERE NOT EXISTS (SELECT * FROM InactiveCustomers WHERE CustomerId = @p0)");
+            .IsEqualTo("SELECT FirstName,LastName FROM Customers WHERE NOT EXISTS (SELECT 1 FROM Customers WHERE CustomerId = @p0)");
         await Assert.That(compiledQuery.Parameters.Count).IsEqualTo(1);
         await Assert.That(compiledQuery.Parameters["p0"]).IsEqualTo(customerId);
     }

@@ -1,4 +1,6 @@
-﻿namespace Smeaql;
+﻿using Smeaql.Select;
+
+namespace Smeaql;
 
 public class SqlQuery : SqlQueryBase<SqlQuery>
 {
@@ -13,6 +15,12 @@ public class SqlQuery : SqlQueryBase<SqlQuery>
     {
         var query = new SqlSelectQuery(Clauses);
         return query.Select(columns);
+    }
+
+    public SqlQuery SelectOne()
+    {
+        Clauses.Add(new SelectOneClause());
+        return This();
     }
 
     internal override SqlQuery This() => this;

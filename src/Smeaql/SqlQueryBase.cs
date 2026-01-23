@@ -136,7 +136,13 @@ public abstract class SqlQueryBase<T>
 
     public T WhereNotExists(SqlQuery subQuery)
     {
-        Clauses.Add(new WhereNotExistsClause(subQuery));
+        Clauses.Add(new WhereNotExistsClause(subQuery, null, null, null));
+        return This();
+    }
+
+    public T WhereNotExists(string table, string column, object value)
+    {
+        Clauses.Add(new WhereNotExistsClause(null, table, column, value));
         return This();
     }
 

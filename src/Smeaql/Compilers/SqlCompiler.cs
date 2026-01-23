@@ -2,6 +2,7 @@
 using System.Text;
 using Smeaql.From;
 using Smeaql.Group;
+using Smeaql.Having;
 using Smeaql.Join;
 using Smeaql.Limit;
 using Smeaql.Order;
@@ -29,7 +30,7 @@ public abstract class SqlCompiler<T>
             CompileJoins(query, stringBuilder, parameterFactory);
             CompileWheres(query, stringBuilder, parameterFactory);
             CompileGroups(query, stringBuilder, parameterFactory);
-            // CompileHavings
+            CompileHavings(query, stringBuilder, parameterFactory);
             CompileOrders(query, stringBuilder, parameterFactory);
             CompileLimit(query, stringBuilder, parameterFactory);
             // CompileUnions
@@ -69,6 +70,31 @@ public abstract class SqlCompiler<T>
                 stringBuilder.Append(',');
             else
                 stringBuilder.Append(" GROUP BY ");
+
+            clause.Compile(This(), stringBuilder, parameterFactory);
+            firstClause = false;
+        }
+    }
+
+    private void CompileHavings<TQuery>(
+        SqlQueryBase<TQuery> query,
+        StringBuilder stringBuilder,
+        ParameterFactory parameterFactory
+    )
+        where TQuery : SqlQueryBase<TQuery>
+    {
+        var firstClause = true;
+
+        foreach (var clause in query.Clauses.OfType<HavingClause>())
+        {
+            if (!firstClause)
+            {
+                stringBuilder.Append(' ');
+                stringBuilder.Append(clause.WhereFlag.ToSql());
+                stringBuilder.Append(' ');
+            }
+            else
+                stringBuilder.Append(" HAVING ");
 
             clause.Compile(This(), stringBuilder, parameterFactory);
             firstClause = false;
@@ -167,7 +193,11 @@ public abstract class SqlCompiler<T>
         foreach (var clause in query.Clauses.OfType<WhereClause>())
         {
             if (!firstClause)
-                stringBuilder.Append($" {clause.WhereFlag.ToSql()} ");
+            {
+                stringBuilder.Append(' ');
+                stringBuilder.Append(clause.WhereFlag.ToSql());
+                stringBuilder.Append(' ');
+            }
             else
                 stringBuilder.Append(" WHERE ");
 

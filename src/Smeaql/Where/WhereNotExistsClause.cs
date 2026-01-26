@@ -1,5 +1,4 @@
 using System.Text;
-using Smeaql.Compilers;
 
 namespace Smeaql.Where;
 
@@ -27,7 +26,7 @@ internal sealed class WhereNotExistsClause : WhereClause
     {
         if(_subQuery is not null)
         {
-            var compiled = compiler.Compile(_subQuery, stringBuilder, parameterFactory);
+            var compiled = compiler.Compile(_subQuery, parameterFactory);
             stringBuilder.Append(
                 $"NOT EXISTS ({compiled.Sql})");
         }
@@ -36,7 +35,7 @@ internal sealed class WhereNotExistsClause : WhereClause
             if (_column is null || _table is null || _value is null)
                 return;
             var query = new SqlQuery(_table).SelectOne().Where(_column, _value);
-            var compiled = compiler.Compile(query, stringBuilder, parameterFactory);
+            var compiled = compiler.Compile(query, parameterFactory);
             stringBuilder.Append(
                 $"NOT EXISTS ({compiled.Sql})");
         }

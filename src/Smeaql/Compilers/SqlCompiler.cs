@@ -41,6 +41,27 @@ public abstract class SqlCompiler<T>
         }
     }
 
+    internal (string Sql, IReadOnlyDictionary<string, object?> Parameters) Compile(SqlQuery query, ParameterFactory parameterFactory)
+    {
+        
+        var stringBuilder = ObjectPools.StringBuilders.Get();
+        try
+        {
+            CompileSelect(query, stringBuilder, parameterFactory);
+            CompileFrom(query, stringBuilder, parameterFactory);
+            CompileJoins(query, stringBuilder, parameterFactory);
+            CompileWheres(query, stringBuilder, parameterFactory);
+            // CompileHavings
+            CompileOrders(query, stringBuilder, parameterFactory);
+            // CompileUnions
+            return (stringBuilder.ToString(), parameterFactory.Parameters.AsReadOnly());
+        }
+        finally
+        {
+            ObjectPools.StringBuilders.Return(stringBuilder);
+        } 
+    }
+
     private void CompileFrom<TQuery>(
         SqlQueryBase<TQuery> query,
         StringBuilder stringBuilder,

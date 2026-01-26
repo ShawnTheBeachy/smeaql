@@ -1,15 +1,14 @@
 using System.Text;
-using Smeaql.Compilers;
 
 namespace Smeaql.Where;
 
 internal sealed class WhereInSubQueryClause : WhereClause
 {
     private readonly string _column;
-    private readonly SqlSelectQuery _subQuery;
+    private readonly SqlQuery _subQuery;
     
 
-    public WhereInSubQueryClause(SqlSelectQuery subQuery, string column)
+    public WhereInSubQueryClause(SqlQuery subQuery, string column)
     {
         _subQuery = subQuery;
         _column = column;
@@ -21,8 +20,7 @@ internal sealed class WhereInSubQueryClause : WhereClause
         ParameterFactory parameterFactory
     )
     {
-        var compiled = new SqlServerCompiler().Compile(_subQuery);
-        parameterFactory.Parameters = compiled.Parameters.ToDictionary();
+        var compiled = compiler.Compile(_subQuery, parameterFactory);
         stringBuilder.Append(
             $"{_column} IN ({compiled.Sql})");
     }

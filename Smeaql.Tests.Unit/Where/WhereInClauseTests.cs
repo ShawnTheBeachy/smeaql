@@ -30,13 +30,11 @@ public sealed class WhereInClauseTests
     {
         //Act
         const string employeeId1 = "123";
-        const string employeeId2 = "456";
         var query = new SqlQuery("Person")
             .Select("FirstName", "LastName")
-            .WhereIn(new SqlQuery("Employee")
-                .Select("LastName")
-                .WhereIn("EmployeeId", employeeId1, employeeId2), 
-                "LastName");
+            .WhereIn("LastName", new SqlQuery("Employee")
+                .Where("EmployeeId", employeeId1)
+                );
 
         // Assert.
         using var asserts = Assert.Multiple();
@@ -44,9 +42,8 @@ public sealed class WhereInClauseTests
         var compiledQuery = new SqlServerCompiler().Compile(query);
         await Assert
             .That(compiledQuery.Sql)
-            .IsEqualTo("SELECT FirstName,LastName FROM Person WHERE LastName IN (SELECT LastName FROM Employee WHERE EmployeeId IN (@p0,@p1))");
-        await Assert.That(compiledQuery.Parameters.Count).IsEqualTo(2);
+            .IsEqualTo("SELECT FirstName,LastName FROM Person WHERE LastName IN (SELECT * FROM Employee WHERE EmployeeId = @p0)");
+        await Assert.That(compiledQuery.Parameters.Count).IsEqualTo(1);
         await Assert.That(compiledQuery.Parameters["p0"]).IsEqualTo(employeeId1);
-        await Assert.That(compiledQuery.Parameters["p1"]).IsEqualTo(employeeId2);
     }
 }

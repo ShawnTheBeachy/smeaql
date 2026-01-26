@@ -84,7 +84,7 @@ public abstract class SqlQueryBase<T>
         return This();
     }
     
-    public T WhereIn(SqlSelectQuery subQuery, string column, params object?[] values)
+    public T WhereIn(string column, SqlQuery subQuery)
     {
         Clauses.Add(new WhereInSubQueryClause(subQuery, column));
         return This();

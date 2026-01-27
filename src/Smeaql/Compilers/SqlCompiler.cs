@@ -14,41 +14,13 @@ public abstract class SqlCompiler<T>
     public (string Sql, IReadOnlyDictionary<string, object?> Parameters) Compile<TQuery>(
         SqlQueryBase<TQuery> query
     )
+        where TQuery : SqlQueryBase<TQuery> => Compile(query, new ParameterFactory());
+
+    internal (string Sql, IReadOnlyDictionary<string, object?> Parameters) Compile<TQuery>(SqlQueryBase<TQuery> query, ParameterFactory parameterFactory)
         where TQuery : SqlQueryBase<TQuery>
     {
-        var parameterFactory = new ParameterFactory();
         var stringBuilder = ObjectPools.StringBuilders.Get();
-
-        try
-        {
-            CompileSelect(query, stringBuilder, parameterFactory);
-            CompileFrom(query, stringBuilder, parameterFactory);
-            CompileJoins(query, stringBuilder, parameterFactory);
-            CompileWheres(query, stringBuilder, parameterFactory);
-            CompileOrders(query, stringBuilder, parameterFactory);
-            return (stringBuilder.ToString(), parameterFactory.Parameters.AsReadOnly());
-        }
-        finally
-        {
-            ObjectPools.StringBuilders.Return(stringBuilder);
-        }
-
-        /* Selects
-           Froms
-           Joins
-           Wheres
-           Groups
-           Havings
-           Orders
-           Limits
-           Unions
-        */
-    }
-
-    internal (string Sql, IReadOnlyDictionary<string, object?> Parameters) Compile(SqlQuery query, ParameterFactory parameterFactory)
-    {
         
-        var stringBuilder = ObjectPools.StringBuilders.Get();
         try
         {
             CompileSelect(query, stringBuilder, parameterFactory);

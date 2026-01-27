@@ -7,7 +7,6 @@ internal sealed class WhereInSubQueryClause : WhereClause
     private readonly string _column;
     private readonly SqlQuery _subQuery;
     
-
     public WhereInSubQueryClause(SqlQuery subQuery, string column)
     {
         _subQuery = subQuery;
@@ -24,5 +23,4 @@ internal sealed class WhereInSubQueryClause : WhereClause
         stringBuilder.Append(
             $"{_column} IN ({compiled.Sql})");
     }
-        
 }

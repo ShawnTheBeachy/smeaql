@@ -7,7 +7,7 @@ internal sealed class WhereInClause : WhereClause
     private readonly string _column;
     private readonly IReadOnlyList<object?> _values;
 
-    public WhereInClause(string column, params object?[] values)
+    public WhereInClause(string column, IReadOnlyList<object?> values)
     {
         _column = column;
         _values = values;
@@ -17,8 +17,19 @@ internal sealed class WhereInClause : WhereClause
         TCompiler compiler,
         StringBuilder stringBuilder,
         ParameterFactory parameterFactory
-    ) =>
-        stringBuilder.Append(
-            $"{_column} IN ({string.Join(',', parameterFactory.CreateParameters(_values))})"
-        );
+    )
+    {
+        stringBuilder.Append(_column);
+        stringBuilder.Append(" IN (");
+
+        for (var i = 0; i < _values.Count; i++)
+        {
+            if (i > 0)
+                stringBuilder.Append(',');
+
+            stringBuilder.Append(parameterFactory.CreateParameter(_values[i]));
+        }
+
+        stringBuilder.Append(')');
+    }
 }

@@ -6,9 +6,7 @@ namespace Smeaql.Tests.Unit.Where;
 public sealed class WhereInClauseTests
 {
     [Test]
-    public async Task Parameters_ShouldBeCreated_WhenUsingWhereIn(
-        CancellationToken cancellationToken
-    )
+    public async Task Parameters_ShouldBeCreated_WhenUsingWhereIn()
     {
         // Act.
         const string authorA = "James Islington";

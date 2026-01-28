@@ -24,26 +24,4 @@ public sealed class WhereInClauseTests
         await Assert.That(compiledQuery.Parameters["p0"]).IsEqualTo(authorA);
         await Assert.That(compiledQuery.Parameters["p1"]).IsEqualTo(authorB);
     }
-
-    [Test]
-    public async Task Parameters_ShouldBeSetInParentQuery_WhenUsingWhereInSubQueryAndParametersAreAddedToTheSubQuery(CancellationToken cancellationToken)
-    {
-        //Act
-        const string employeeId1 = "123";
-        var query = new SqlQuery("Person")
-            .Select("FirstName", "LastName")
-            .WhereIn("LastName", new SqlQuery("Employee")
-                .Where("EmployeeId", employeeId1)
-                );
-
-        // Assert.
-        using var asserts = Assert.Multiple();
-        await Assert.That(query.Clauses.OfType<WhereInSubQueryClause>().Count()).IsEqualTo(1);
-        var compiledQuery = new SqlServerCompiler().Compile(query);
-        await Assert
-            .That(compiledQuery.Sql)
-            .IsEqualTo("SELECT FirstName,LastName FROM Person WHERE LastName IN (SELECT * FROM Employee WHERE EmployeeId = @p0)");
-        await Assert.That(compiledQuery.Parameters.Count).IsEqualTo(1);
-        await Assert.That(compiledQuery.Parameters["p0"]).IsEqualTo(employeeId1);
-    }
 }

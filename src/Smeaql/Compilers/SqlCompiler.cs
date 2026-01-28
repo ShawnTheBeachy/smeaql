@@ -20,20 +20,12 @@ public abstract class SqlCompiler<T>
     )
         where TQuery : SqlQueryBase<TQuery>
     {
-        var parameterFactory = new ParameterFactory();
         var stringBuilder = ObjectPools.StringBuilders.Get();
+        var parameterFactory = new ParameterFactory();
 
         try
         {
-            CompileSelect(query, stringBuilder, parameterFactory);
-            CompileFrom(query, stringBuilder, parameterFactory);
-            CompileJoins(query, stringBuilder, parameterFactory);
-            CompileWheres(query, stringBuilder, parameterFactory);
-            CompileGroups(query, stringBuilder, parameterFactory);
-            CompileHavings(query, stringBuilder, parameterFactory);
-            CompileOrders(query, stringBuilder, parameterFactory);
-            CompileLimit(query, stringBuilder, parameterFactory);
-            // CompileUnions
+            Compile(query, stringBuilder, parameterFactory);
             return (stringBuilder.ToString(), parameterFactory.Parameters.AsReadOnly());
         }
         finally
@@ -42,27 +34,22 @@ public abstract class SqlCompiler<T>
         }
     }
 
-    internal (string Sql, IReadOnlyDictionary<string, object?> Parameters) Compile(
-        SqlQuery query,
+    internal void Compile<TQuery>(
+        SqlQueryBase<TQuery> query,
+        StringBuilder stringBuilder,
         ParameterFactory parameterFactory
     )
+        where TQuery : SqlQueryBase<TQuery>
     {
-        var stringBuilder = ObjectPools.StringBuilders.Get();
-        try
-        {
-            CompileSelect(query, stringBuilder, parameterFactory);
-            CompileFrom(query, stringBuilder, parameterFactory);
-            CompileJoins(query, stringBuilder, parameterFactory);
-            CompileWheres(query, stringBuilder, parameterFactory);
-            // CompileHavings
-            CompileOrders(query, stringBuilder, parameterFactory);
-            // CompileUnions
-            return (stringBuilder.ToString(), parameterFactory.Parameters.AsReadOnly());
-        }
-        finally
-        {
-            ObjectPools.StringBuilders.Return(stringBuilder);
-        }
+        CompileSelect(query, stringBuilder, parameterFactory);
+        CompileFrom(query, stringBuilder, parameterFactory);
+        CompileJoins(query, stringBuilder, parameterFactory);
+        CompileWheres(query, stringBuilder, parameterFactory);
+        CompileGroups(query, stringBuilder, parameterFactory);
+        CompileHavings(query, stringBuilder, parameterFactory);
+        CompileOrders(query, stringBuilder, parameterFactory);
+        CompileLimit(query, stringBuilder, parameterFactory);
+        // CompileUnions
     }
 
     private void CompileFrom<TQuery>(

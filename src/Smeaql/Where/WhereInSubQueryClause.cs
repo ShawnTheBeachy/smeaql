@@ -2,13 +2,13 @@ using System.Text;
 
 namespace Smeaql.Where;
 
-internal sealed class WhereInSubQueryClause : WhereClause
+internal sealed class WhereInSubQueryClause<TQuery> : WhereClause
+    where TQuery : SqlQueryBase<TQuery>
 {
     private readonly string _column;
-    private readonly SqlQuery _subQuery;
-    
+    private readonly TQuery _subQuery;
 
-    public WhereInSubQueryClause(SqlQuery subQuery, string column)
+    public WhereInSubQueryClause(TQuery subQuery, string column)
     {
         _subQuery = subQuery;
         _column = column;
@@ -20,9 +20,9 @@ internal sealed class WhereInSubQueryClause : WhereClause
         ParameterFactory parameterFactory
     )
     {
-        var compiled = compiler.Compile(_subQuery, parameterFactory);
-        stringBuilder.Append(
-            $"{_column} IN ({compiled.Sql})");
+        stringBuilder.Append(_column);
+        stringBuilder.Append(" IN (");
+        compiler.Compile(_subQuery, stringBuilder, parameterFactory);
+        stringBuilder.Append(')');
     }
-        
 }

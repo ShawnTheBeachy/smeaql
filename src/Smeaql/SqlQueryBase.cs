@@ -128,6 +128,15 @@ public abstract class SqlQueryBase<T>
         return This();
     }
 
+    public T WhereIn<TQuery>(string column, TQuery subQuery)
+        where TQuery : SqlQueryBase<TQuery>
+    {
+        Clauses.Add(
+            new WhereInSubQueryClause<TQuery>(subQuery, column) { WhereFlag = WhereFlag.And }
+        );
+        return This();
+    }
+
     public T WhereIn(string column, params object?[] values) =>
         WhereInPrivate(column, values, WhereFlag.And);
 

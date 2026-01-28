@@ -2,12 +2,13 @@ using System.Text;
 
 namespace Smeaql.Where;
 
-internal sealed class WhereNotExistsClause<TQuery> : WhereClause
+internal sealed class WhereExistsClause<TQuery> : WhereClause
     where TQuery : SqlQueryBase<TQuery>
 {
     private readonly TQuery _subQuery;
+    public ExistsFlag ExistsFlag { get; init; } = ExistsFlag.Exists;
 
-    public WhereNotExistsClause(TQuery subQuery)
+    public WhereExistsClause(TQuery subQuery)
     {
         _subQuery = subQuery;
     }
@@ -18,7 +19,8 @@ internal sealed class WhereNotExistsClause<TQuery> : WhereClause
         ParameterFactory parameterFactory
     )
     {
-        stringBuilder.Append("NOT EXISTS (");
+        stringBuilder.Append(ExistsFlag.ToSql());
+        stringBuilder.Append('(');
         compiler.Compile(_subQuery, stringBuilder, parameterFactory);
         stringBuilder.Append(')');
     }

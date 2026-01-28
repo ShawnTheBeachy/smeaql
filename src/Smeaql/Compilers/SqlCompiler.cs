@@ -41,7 +41,7 @@ public abstract class SqlCompiler<T>
     )
         where TQuery : SqlQueryBase<TQuery>
     {
-        CompileSelect(query, stringBuilder, parameterFactory);
+        CompileSelects(query, stringBuilder, parameterFactory);
         CompileFrom(query, stringBuilder, parameterFactory);
         CompileJoins(query, stringBuilder, parameterFactory);
         CompileWheres(query, stringBuilder, parameterFactory);
@@ -161,7 +161,7 @@ public abstract class SqlCompiler<T>
         }
     }
 
-    private void CompileSelect<TQuery>(
+    private void CompileSelects<TQuery>(
         SqlQueryBase<TQuery> query,
         StringBuilder stringBuilder,
         ParameterFactory parameterFactory

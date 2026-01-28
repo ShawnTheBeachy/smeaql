@@ -17,6 +17,12 @@ internal sealed class SelectColumnsClause : SelectClause
         ParameterFactory parameterFactory
     )
     {
+        if (_columns.Count < 1)
+        {
+            stringBuilder.Append('*');
+            return;
+        }
+
         for (var i = 0; i < _columns.Count; i++)
         {
             stringBuilder.Append(_columns[i]);

@@ -17,10 +17,11 @@ public class SqlQuery : SqlQueryBase<SqlQuery>
         return query.Select(columns);
     }
 
-    public SqlQuery SelectOne()
+    public SqlSelectQuery SelectValue(object? value)
     {
-        Clauses.Add(new SelectOneClause());
-        return This();
+        var query = new SqlSelectQuery(Clauses);
+        query.Clauses.Add(new SelectValueClause(value));
+        return query;
     }
 
     internal override SqlQuery This() => this;

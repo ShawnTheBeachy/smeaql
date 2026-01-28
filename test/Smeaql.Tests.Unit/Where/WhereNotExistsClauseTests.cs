@@ -17,15 +17,18 @@ public sealed class WhereNotExistsClauseTests
             .WhereNotExists("Customers", "CustomerId", customerId);
         // Assert.
         using var asserts = Assert.Multiple();
-        await Assert.That(query.Clauses.OfType<WhereNotExistsClause>().Count()).IsEqualTo(1);
+        await Assert
+            .That(query.Clauses.OfType<WhereNotExistsClause<SqlSelectQuery>>().Count())
+            .IsEqualTo(1);
         var compiledQuery = new SqlServerCompiler().Compile(query);
         await Assert
             .That(compiledQuery.Sql)
             .IsEqualTo(
-                "SELECT FirstName,LastName FROM Customers WHERE NOT EXISTS (SELECT 1 FROM Customers WHERE CustomerId = @p0)"
+                "SELECT FirstName,LastName FROM Customers WHERE NOT EXISTS (SELECT @p0 FROM Customers WHERE CustomerId = @p1)"
             );
-        await Assert.That(compiledQuery.Parameters.Count).IsEqualTo(1);
-        await Assert.That(compiledQuery.Parameters["p0"]).IsEqualTo(customerId);
+        await Assert.That(compiledQuery.Parameters.Count).IsEqualTo(2);
+        await Assert.That(compiledQuery.Parameters["p0"]).IsEqualTo(1);
+        await Assert.That(compiledQuery.Parameters["p1"]).IsEqualTo(customerId);
     }
 
     [Test]
@@ -36,16 +39,22 @@ public sealed class WhereNotExistsClauseTests
         var query = new SqlQuery("Customers")
             .Select("FirstName", "LastName")
             .WhereNotExists(
-                new SqlQuery("InactiveCustomers").WhereColumns("CustomerId", "InactiveCustomerId")
+                new SqlQuery("InactiveCustomers")
+                    .SelectValue(1)
+                    .WhereColumns("CustomerId", "InactiveCustomerId")
             );
         // Assert.
         using var asserts = Assert.Multiple();
-        await Assert.That(query.Clauses.OfType<WhereNotExistsClause>().Count()).IsEqualTo(1);
+        await Assert
+            .That(query.Clauses.OfType<WhereNotExistsClause<SqlSelectQuery>>().Count())
+            .IsEqualTo(1);
         var compiledQuery = new SqlServerCompiler().Compile(query);
         await Assert
             .That(compiledQuery.Sql)
             .IsEqualTo(
-                "SELECT FirstName,LastName FROM Customers WHERE NOT EXISTS (SELECT * FROM InactiveCustomers WHERE CustomerId = InactiveCustomerId)"
+                "SELECT FirstName,LastName FROM Customers WHERE NOT EXISTS (SELECT @p0 FROM InactiveCustomers WHERE CustomerId = InactiveCustomerId)"
             );
+        await Assert.That(compiledQuery.Parameters.Count).IsEqualTo(1);
+        await Assert.That(compiledQuery.Parameters["p0"]).IsEqualTo(1);
     }
 }

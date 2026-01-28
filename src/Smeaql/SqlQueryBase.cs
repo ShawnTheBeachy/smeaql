@@ -137,15 +137,20 @@ public abstract class SqlQueryBase<T>
         return This();
     }
 
-    public T WhereNotExists(SqlQuery subQuery)
+    public T WhereNotExists<TQuery>(TQuery subQuery)
+        where TQuery : SqlQueryBase<TQuery>
     {
-        Clauses.Add(new WhereNotExistsClause(subQuery, null, null, null));
+        Clauses.Add(new WhereNotExistsClause<TQuery>(subQuery));
         return This();
     }
 
-    public T WhereNotExists(string table, string column, object value)
+    public T WhereNotExists(string table, string column, object? value)
     {
-        Clauses.Add(new WhereNotExistsClause(null, table, column, value));
+        Clauses.Add(
+            new WhereNotExistsClause<SqlSelectQuery>(
+                new SqlQuery(table).SelectValue(1).Where(column, value)
+            )
+        );
         return This();
     }
 

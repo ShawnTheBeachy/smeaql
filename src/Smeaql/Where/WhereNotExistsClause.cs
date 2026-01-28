@@ -2,20 +2,14 @@ using System.Text;
 
 namespace Smeaql.Where;
 
-internal sealed class WhereNotExistsClause : WhereClause
+internal sealed class WhereNotExistsClause<TQuery> : WhereClause
+    where TQuery : SqlQueryBase<TQuery>
 {
-    private readonly string? _column;
-    private readonly SqlQuery? _subQuery;
-    private readonly string? _table;
-    private readonly object? _value;
-    
+    private readonly TQuery _subQuery;
 
-    public WhereNotExistsClause(SqlQuery? subQuery, string? table, string? column, object? value)
+    public WhereNotExistsClause(TQuery subQuery)
     {
-        _column = column;
         _subQuery = subQuery;
-        _table = table;
-        _value = value;
     }
 
     public override void Compile<TCompiler>(
@@ -24,22 +18,8 @@ internal sealed class WhereNotExistsClause : WhereClause
         ParameterFactory parameterFactory
     )
     {
-        if(_subQuery is not null)
-        {
-            var compiled = compiler.Compile(_subQuery, parameterFactory);
-            stringBuilder.Append(
-                $"NOT EXISTS ({compiled.Sql})");
-        }
-        else
-        {
-            if (_column is null || _table is null || _value is null)
-                return;
-            var query = new SqlQuery(_table).SelectOne().Where(_column, _value);
-            var compiled = compiler.Compile(query, parameterFactory);
-            stringBuilder.Append(
-                $"NOT EXISTS ({compiled.Sql})");
-        }
-        
+        stringBuilder.Append("NOT EXISTS (");
+        compiler.Compile(_subQuery, stringBuilder, parameterFactory);
+        stringBuilder.Append(')');
     }
-        
 }

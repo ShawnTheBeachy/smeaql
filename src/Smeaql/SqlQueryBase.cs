@@ -137,6 +137,23 @@ public abstract class SqlQueryBase<T>
         return This();
     }
 
+    public T WhereNotExists<TQuery>(TQuery subQuery)
+        where TQuery : SqlQueryBase<TQuery>
+    {
+        Clauses.Add(new WhereNotExistsClause<TQuery>(subQuery));
+        return This();
+    }
+
+    public T WhereNotExists(string table, string column, object? value)
+    {
+        Clauses.Add(
+            new WhereNotExistsClause<SqlSelectQuery>(
+                new SqlQuery(table).SelectValue(1).Where(column, value)
+            )
+        );
+        return This();
+    }
+
     public T WhereIn(string column, params object?[] values) =>
         WhereInPrivate(column, values, WhereFlag.And);
 

@@ -127,10 +127,13 @@ public abstract class SqlQueryBase<T>
         Clauses.Add(new WhereValueClause(column, 0) { WhereFlag = whereFlag });
         return This();
     }
-    
-    public T WhereIn(string column, SqlQuery subQuery)
+
+    public T WhereIn<TQuery>(string column, TQuery subQuery)
+        where TQuery : SqlQueryBase<TQuery>
     {
-        Clauses.Add(new WhereInSubQueryClause(subQuery, column));
+        Clauses.Add(
+            new WhereInSubQueryClause<TQuery>(subQuery, column) { WhereFlag = WhereFlag.And }
+        );
         return This();
     }
 

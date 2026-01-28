@@ -18,33 +18,38 @@ public abstract class SqlCompiler<T>
     public (string Sql, IReadOnlyDictionary<string, object?> Parameters) Compile<TQuery>(
         SqlQueryBase<TQuery> query
     )
-        where TQuery : SqlQueryBase<TQuery> => Compile(query, new ParameterFactory());
-
-    internal (string Sql, IReadOnlyDictionary<string, object?> Parameters) Compile<TQuery>(
-        SqlQueryBase<TQuery> query,
-        ParameterFactory parameterFactory
-    )
         where TQuery : SqlQueryBase<TQuery>
     {
         var stringBuilder = ObjectPools.StringBuilders.Get();
+        var parameterFactory = new ParameterFactory();
 
         try
         {
-            CompileSelect(query, stringBuilder, parameterFactory);
-            CompileFrom(query, stringBuilder, parameterFactory);
-            CompileJoins(query, stringBuilder, parameterFactory);
-            CompileWheres(query, stringBuilder, parameterFactory);
-            CompileGroups(query, stringBuilder, parameterFactory);
-            CompileHavings(query, stringBuilder, parameterFactory);
-            CompileOrders(query, stringBuilder, parameterFactory);
-            CompileLimit(query, stringBuilder, parameterFactory);
-            // CompileUnions
+            Compile(query, stringBuilder, parameterFactory);
             return (stringBuilder.ToString(), parameterFactory.Parameters.AsReadOnly());
         }
         finally
         {
             ObjectPools.StringBuilders.Return(stringBuilder);
         }
+    }
+
+    internal void Compile<TQuery>(
+        SqlQueryBase<TQuery> query,
+        StringBuilder stringBuilder,
+        ParameterFactory parameterFactory
+    )
+        where TQuery : SqlQueryBase<TQuery>
+    {
+        CompileSelect(query, stringBuilder, parameterFactory);
+        CompileFrom(query, stringBuilder, parameterFactory);
+        CompileJoins(query, stringBuilder, parameterFactory);
+        CompileWheres(query, stringBuilder, parameterFactory);
+        CompileGroups(query, stringBuilder, parameterFactory);
+        CompileHavings(query, stringBuilder, parameterFactory);
+        CompileOrders(query, stringBuilder, parameterFactory);
+        CompileLimit(query, stringBuilder, parameterFactory);
+        // CompileUnions
     }
 
     private void CompileFrom<TQuery>(

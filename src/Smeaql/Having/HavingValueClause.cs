@@ -1,13 +1,13 @@
 ﻿using System.Text;
 
-namespace Smeaql.Where;
+namespace Smeaql.Having;
 
-internal sealed class WhereValueClause : WhereClause
+internal sealed class HavingValueClause : HavingClause
 {
     private readonly string _column;
     private readonly object? _value;
 
-    public WhereValueClause(string column, object? value)
+    public HavingValueClause(string column, object? value)
     {
         _column = column;
         _value = value;

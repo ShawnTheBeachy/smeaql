@@ -1,9 +1,13 @@
 <Solution>
+  <Folder Name="/ci/" />
+  <Folder Name="/ci/github/">
+    <File Path=".github/workflows/validate-pr.yml" />
+  </Folder>
   <Folder Name="/src/">
     <Project Path="src/Smeaql.ConsoleApp/Smeaql.ConsoleApp.csproj" />
     <Project Path="src/Smeaql/Smeaql.csproj" />
   </Folder>
   <Folder Name="/test/">
-    <Project Path="Smeaql.Tests.Unit/Smeaql.Tests.Unit.csproj" />
+    <Project Path="test/Smeaql.Tests.Unit/Smeaql.Tests.Unit.csproj" />
   </Folder>
 </Solution>

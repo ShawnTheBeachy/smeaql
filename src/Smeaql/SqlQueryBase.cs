@@ -92,6 +92,15 @@ public abstract class SqlQueryBase<T>
 
     internal abstract T This();
 
+    public T When(bool condition, Action<T> action)
+    {
+        if (!condition)
+            return This();
+
+        action(This());
+        return This();
+    }
+
     public T Where(string column, object? value) => Where(column, "=", value);
 
     public T Where(string column, string @operator, object? value) =>

@@ -2,7 +2,7 @@
 
 internal static class StringExtensions
 {
-    public static ReadOnlySpan<char> Sanitize(this ReadOnlySpan<char> value)
+    public static ReadOnlySpan<char> Bracket(this ReadOnlySpan<char> value)
     {
         if (value.Length < 1)
             return value;

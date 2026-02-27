@@ -5,54 +5,54 @@ namespace Smeaql.Tests.Unit.Helpers;
 public sealed class StringExtensionsTests
 {
     [Test]
-    public async Task Sanitize_ShouldDoNothing_WhenValueIsEmpty()
+    public async Task Bracket_ShouldDoNothing_WhenValueIsEmpty()
     {
         // Arrange.
         const string value = "";
 
         // Act.
-        var sanitized = new string(value.Sanitize());
+        var bracketed = new string(value.Bracket());
 
         // Assert.
-        await Assert.That(sanitized).IsEqualTo(value);
+        await Assert.That(bracketed).IsEqualTo(value);
     }
 
     [Test]
-    public async Task Sanitize_ShouldDoNothing_WhenValueIsEnclosedInDoubleQuotes()
+    public async Task Bracket_ShouldDoNothing_WhenValueIsEnclosedInDoubleQuotes()
     {
         // Arrange.
         const string value = "\"Value\"";
 
         // Act.
-        var sanitized = new string(value.Sanitize());
+        var bracketed = new string(value.Bracket());
 
         // Assert.
-        await Assert.That(sanitized).IsEqualTo(value);
+        await Assert.That(bracketed).IsEqualTo(value);
     }
 
     [Test]
-    public async Task Sanitize_ShouldDoNothing_WhenValueIsEnclosedInSquareBrackets()
+    public async Task Bracket_ShouldDoNothing_WhenValueIsEnclosedInSquareBrackets()
     {
         // Arrange.
         const string value = "[Value]";
 
         // Act.
-        var sanitized = new string(value.Sanitize());
+        var bracketed = new string(value.Bracket());
 
         // Assert.
-        await Assert.That(sanitized).IsEqualTo(value);
+        await Assert.That(bracketed).IsEqualTo(value);
     }
 
     [Test]
-    public async Task Sanitize_ShouldEncloseValueInSquareBrackets_WhenItIsNotAlreadyEnclosed()
+    public async Task Bracket_ShouldEncloseValueInSquareBrackets_WhenItIsNotAlreadyEnclosed()
     {
         // Arrange.
         const string value = "My Value";
 
         // Act.
-        var sanitized = new string(value.Sanitize());
+        var bracketed = new string(value.Bracket());
 
         // Assert.
-        await Assert.That(sanitized).IsEqualTo("[My Value]");
+        await Assert.That(bracketed).IsEqualTo("[My Value]");
     }
 }

@@ -63,4 +63,17 @@ public sealed class StringExtensionsTests
         await Assert.That(bracketed).IsEqualTo("[My Value]");
         await Assert.That(bracketed).IsNotSameReferenceAs(value);
     }
+
+    [Test]
+    public async Task Bracket_ShouldSplitOnPeriods_WhenPeriodsArePresent()
+    {
+        // Arrange.
+        const string value = "My.Test.Value";
+
+        // Act.
+        var bracketed = value.Bracket();
+
+        // Assert.
+        await Assert.That(bracketed).IsEqualTo("[My].[Test].[Value]");
+    }
 }

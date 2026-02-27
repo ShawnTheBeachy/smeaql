@@ -14,6 +14,6 @@ public sealed class GroupColumnsClauseTests
         var compiledQuery = new SqlServerCompiler().Compile(query);
         await Assert
             .That(compiledQuery.Sql)
-            .IsEqualTo("SELECT * FROM Books GROUP BY Title,Author,Rating");
+            .IsEqualTo("SELECT * FROM [Books] GROUP BY [Title],[Author],[Rating]");
     }
 }

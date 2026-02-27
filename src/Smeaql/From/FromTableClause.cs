@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using Smeaql.Helpers;
 
 namespace Smeaql.From;
 
@@ -15,5 +16,5 @@ internal sealed class FromTableClause : FromClause
         TCompiler compiler,
         StringBuilder stringBuilder,
         ParameterFactory parameterFactory
-    ) => stringBuilder.Append(_table);
+    ) => stringBuilder.Append(_table.Bracket());
 }

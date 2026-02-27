@@ -15,7 +15,9 @@ public sealed class JoinClauseTests
         var compiledQuery = new SqlServerCompiler().Compile(query);
         await Assert
             .That(compiledQuery.Sql)
-            .IsEqualTo("SELECT * FROM Books INNER JOIN Authors ON Authors.Id > Books.AuthorId");
+            .IsEqualTo(
+                "SELECT * FROM [Books] INNER JOIN [Authors] ON [Authors].[Id] > [Books].[AuthorId]"
+            );
     }
 
     [Test]
@@ -28,7 +30,9 @@ public sealed class JoinClauseTests
         var compiledQuery = new SqlServerCompiler().Compile(query);
         await Assert
             .That(compiledQuery.Sql)
-            .IsEqualTo("SELECT * FROM Books LEFT JOIN Authors ON Authors.Id > Books.AuthorId");
+            .IsEqualTo(
+                "SELECT * FROM [Books] LEFT JOIN [Authors] ON [Authors].[Id] > [Books].[AuthorId]"
+            );
     }
 
     [Test]
@@ -41,7 +45,9 @@ public sealed class JoinClauseTests
         var compiledQuery = new SqlServerCompiler().Compile(query);
         await Assert
             .That(compiledQuery.Sql)
-            .IsEqualTo("SELECT * FROM Books RIGHT JOIN Authors ON Authors.Id > Books.AuthorId");
+            .IsEqualTo(
+                "SELECT * FROM [Books] RIGHT JOIN [Authors] ON [Authors].[Id] > [Books].[AuthorId]"
+            );
     }
 
     [Test]
@@ -57,7 +63,9 @@ public sealed class JoinClauseTests
         var compiledQuery = new SqlServerCompiler().Compile(query);
         await Assert
             .That(compiledQuery.Sql)
-            .IsEqualTo("SELECT * FROM Books INNER JOIN Authors ON Books.AuthorId = Authors.Id");
+            .IsEqualTo(
+                "SELECT * FROM [Books] INNER JOIN [Authors] ON [Books].[AuthorId] = [Authors].[Id]"
+            );
     }
 
     [Test]
@@ -73,7 +81,9 @@ public sealed class JoinClauseTests
         var compiledQuery = new SqlServerCompiler().Compile(query);
         await Assert
             .That(compiledQuery.Sql)
-            .IsEqualTo("SELECT * FROM Books LEFT JOIN Authors ON Books.AuthorId = Authors.Id");
+            .IsEqualTo(
+                "SELECT * FROM [Books] LEFT JOIN [Authors] ON [Books].[AuthorId] = [Authors].[Id]"
+            );
     }
 
     [Test]
@@ -89,7 +99,9 @@ public sealed class JoinClauseTests
         var compiledQuery = new SqlServerCompiler().Compile(query);
         await Assert
             .That(compiledQuery.Sql)
-            .IsEqualTo("SELECT * FROM Books RIGHT JOIN Authors ON Books.AuthorId = Authors.Id");
+            .IsEqualTo(
+                "SELECT * FROM [Books] RIGHT JOIN [Authors] ON [Books].[AuthorId] = [Authors].[Id]"
+            );
     }
 
     [Test]
@@ -106,7 +118,7 @@ public sealed class JoinClauseTests
         await Assert
             .That(compiledQuery.Sql)
             .IsEqualTo(
-                "SELECT * FROM Books LEFT JOIN Ratings ON Ratings.BookId = Books.Id AND Ratings.Rating > @p0"
+                "SELECT * FROM [Books] LEFT JOIN [Ratings] ON [Ratings].[BookId] = [Books].[Id] AND [Ratings].[Rating] > @p0"
             );
     }
 }

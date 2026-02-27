@@ -56,20 +56,20 @@ public abstract class SqlQueryBase<T>
     public T OrWhere(string column, object? value) => OrWhere(column, "=", value);
 
     public T OrWhere(string column, string @operator, object? value) =>
-        WherePrivate(column, @operator, value, WhereFlag.Or);
+        WherePrivate(column, @operator, value, ConditionType.Or);
 
     public T OrWhereColumns(string leftColumn, string rightColumn) =>
         OrWhereColumns(leftColumn, "=", rightColumn);
 
     public T OrWhereColumns(string leftColumn, string @operator, string rightColumn) =>
-        WhereColumnsPrivate(leftColumn, @operator, rightColumn, WhereFlag.Or);
+        WhereColumnsPrivate(leftColumn, @operator, rightColumn, ConditionType.Or);
 
-    public T OrWhereFalse(string column) => WhereFalsePrivate(column, WhereFlag.Or);
+    public T OrWhereFalse(string column) => WhereFalsePrivate(column, ConditionType.Or);
 
     public T OrWhereIn(string column, params object?[] values) =>
-        WhereInPrivate(column, values, WhereFlag.Or);
+        WhereInPrivate(column, values, ConditionType.Or);
 
-    public T OrWhereTrue(string column) => WhereTruePrivate(column, WhereFlag.Or);
+    public T OrWhereTrue(string column) => WhereTruePrivate(column, ConditionType.Or);
 
     public T RightJoin(string table, string left, string right) =>
         RightJoin(table, left, "=", right);
@@ -104,26 +104,26 @@ public abstract class SqlQueryBase<T>
     public T Where(string column, object? value) => Where(column, "=", value);
 
     public T Where(string column, string @operator, object? value) =>
-        WherePrivate(column, @operator, value, WhereFlag.And);
+        WherePrivate(column, @operator, value, ConditionType.And);
 
     public T WhereColumns(string leftColumn, string rightColumn) =>
         WhereColumns(leftColumn, "=", rightColumn);
 
     public T WhereColumns(string leftColumn, string @operator, string rightColumn) =>
-        WhereColumnsPrivate(leftColumn, @operator, rightColumn, WhereFlag.And);
+        WhereColumnsPrivate(leftColumn, @operator, rightColumn, ConditionType.And);
 
     private T WhereColumnsPrivate(
         string leftColumn,
         string @operator,
         string rightColumn,
-        WhereFlag whereFlag
+        ConditionType conditionType
     )
     {
         Clauses.Add(
             new WhereColumnsClause(leftColumn, rightColumn)
             {
                 Operator = @operator,
-                WhereFlag = whereFlag,
+                ConditionType = conditionType,
             }
         );
         return This();
@@ -145,11 +145,11 @@ public abstract class SqlQueryBase<T>
         return This();
     }
 
-    public T WhereFalse(string column) => WhereFalsePrivate(column, WhereFlag.And);
+    public T WhereFalse(string column) => WhereFalsePrivate(column, ConditionType.And);
 
-    private T WhereFalsePrivate(string column, WhereFlag whereFlag)
+    private T WhereFalsePrivate(string column, ConditionType conditionType)
     {
-        Clauses.Add(new WhereValueClause(column, 0) { WhereFlag = whereFlag });
+        Clauses.Add(new WhereValueClause(column, 0) { ConditionType = conditionType });
         return This();
     }
 
@@ -157,7 +157,10 @@ public abstract class SqlQueryBase<T>
         where TQuery : SqlQueryBase<TQuery>
     {
         Clauses.Add(
-            new WhereInSubQueryClause<TQuery>(subQuery, column) { WhereFlag = WhereFlag.And }
+            new WhereInSubQueryClause<TQuery>(subQuery, column)
+            {
+                ConditionType = ConditionType.And,
+            }
         );
         return This();
     }
@@ -172,27 +175,40 @@ public abstract class SqlQueryBase<T>
         );
 
     public T WhereIn(string column, params object?[] values) =>
-        WhereInPrivate(column, values, WhereFlag.And);
+        WhereInPrivate(column, values, ConditionType.And);
 
-    private T WhereInPrivate(string column, IReadOnlyList<object?> values, WhereFlag whereFlag)
+    private T WhereInPrivate(
+        string column,
+        IReadOnlyList<object?> values,
+        ConditionType conditionType
+    )
     {
-        Clauses.Add(new WhereInClause(column, values) { WhereFlag = whereFlag });
+        Clauses.Add(new WhereInClause(column, values) { ConditionType = conditionType });
         return This();
     }
 
-    private T WherePrivate(string column, string @operator, object? value, WhereFlag whereFlag)
+    private T WherePrivate(
+        string column,
+        string @operator,
+        object? value,
+        ConditionType conditionType
+    )
     {
         Clauses.Add(
-            new WhereValueClause(column, value) { Operator = @operator, WhereFlag = whereFlag }
+            new WhereValueClause(column, value)
+            {
+                Operator = @operator,
+                ConditionType = conditionType,
+            }
         );
         return This();
     }
 
-    public T WhereTrue(string column) => WhereTruePrivate(column, WhereFlag.And);
+    public T WhereTrue(string column) => WhereTruePrivate(column, ConditionType.And);
 
-    private T WhereTruePrivate(string column, WhereFlag whereFlag)
+    private T WhereTruePrivate(string column, ConditionType conditionType)
     {
-        Clauses.Add(new WhereValueClause(column, 1) { WhereFlag = whereFlag });
+        Clauses.Add(new WhereValueClause(column, 1) { ConditionType = conditionType });
         return This();
     }
 }

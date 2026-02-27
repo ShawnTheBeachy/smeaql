@@ -21,7 +21,7 @@ public sealed class WhereInSubQueryClauseTests
         using var asserts = Assert.Multiple();
         await Assert
             .That(sql)
-            .IsEqualTo("SELECT * FROM Fruits WHERE Name IN (SELECT Name FROM Favorites)");
+            .IsEqualTo("SELECT * FROM [Fruits] WHERE [Name] IN (SELECT [Name] FROM [Favorites])");
         await Assert.That(parameters).IsEmpty();
     }
 
@@ -36,7 +36,7 @@ public sealed class WhereInSubQueryClauseTests
             .Select("FirstName", "LastName")
             .WhereIn(
                 "LastName",
-                new SqlQuery("Employee").Select("LastName").Where("EmployeeId", employeeId)
+                new SqlQuery("Employees").Select("LastName").Where("EmployeeId", employeeId)
             );
 
         // Assert.
@@ -48,7 +48,7 @@ public sealed class WhereInSubQueryClauseTests
         await Assert
             .That(compiledQuery.Sql)
             .IsEqualTo(
-                "SELECT FirstName,LastName FROM Person WHERE LastName IN (SELECT LastName FROM Employee WHERE EmployeeId = @p0)"
+                "SELECT [FirstName],[LastName] FROM [Person] WHERE [LastName] IN (SELECT [LastName] FROM [Employees] WHERE [EmployeeId] = @p0)"
             );
         await Assert.That(compiledQuery.Parameters.Count).IsEqualTo(1);
         await Assert.That(compiledQuery.Parameters["p0"]).IsEqualTo(employeeId);

@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using Smeaql.Helpers;
 
 namespace Smeaql.Where;
 
@@ -19,7 +20,7 @@ internal sealed class WhereInClause : WhereClause
         ParameterFactory parameterFactory
     )
     {
-        stringBuilder.Append(_column);
+        stringBuilder.Append(_column.Bracket());
         stringBuilder.Append(" IN (");
 
         for (var i = 0; i < _values.Count; i++)

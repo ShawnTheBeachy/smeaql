@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using Smeaql.Helpers;
 
 namespace Smeaql.Group;
 
@@ -19,7 +20,7 @@ internal sealed class GroupColumnsClause : GroupClause
     {
         for (var i = 0; i < _columns.Count; i++)
         {
-            stringBuilder.Append(_columns[i]);
+            stringBuilder.Append(_columns[i].Bracket());
 
             if (i < _columns.Count - 1)
                 stringBuilder.Append(',');

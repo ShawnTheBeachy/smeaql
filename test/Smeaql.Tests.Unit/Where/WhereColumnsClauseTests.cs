@@ -18,7 +18,9 @@ public sealed class WhereColumnsClauseTests
             .That(query.Clauses.OfType<WhereColumnsClause>().First().Operator)
             .IsEqualTo(">");
         var compiledQuery = new SqlServerCompiler().Compile(query);
-        await Assert.That(compiledQuery.Sql).IsEqualTo("SELECT * FROM Books WHERE Title > Author");
+        await Assert
+            .That(compiledQuery.Sql)
+            .IsEqualTo("SELECT * FROM [Books] WHERE [Title] > [Author]");
     }
 
     [Test]
@@ -34,7 +36,9 @@ public sealed class WhereColumnsClauseTests
             .That(query.Clauses.OfType<WhereColumnsClause>().First().Operator)
             .IsEqualTo("=");
         var compiledQuery = new SqlServerCompiler().Compile(query);
-        await Assert.That(compiledQuery.Sql).IsEqualTo("SELECT * FROM Books WHERE Title = Author");
+        await Assert
+            .That(compiledQuery.Sql)
+            .IsEqualTo("SELECT * FROM [Books] WHERE [Title] = [Author]");
     }
 
     [Test]
@@ -49,6 +53,6 @@ public sealed class WhereColumnsClauseTests
         var compiledQuery = new SqlServerCompiler().Compile(query);
         await Assert
             .That(compiledQuery.Sql)
-            .IsEqualTo("SELECT * FROM Books WHERE Title = Author OR Title = Genre");
+            .IsEqualTo("SELECT * FROM [Books] WHERE [Title] = [Author] OR [Title] = [Genre]");
     }
 }

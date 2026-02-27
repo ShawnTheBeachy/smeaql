@@ -1,4 +1,4 @@
 ﻿using BenchmarkDotNet.Running;
-using Smeaql.ConsoleApp;
+using Smeaql.Benchmarks;
 
 BenchmarkRunner.Run<Benchmarks>();

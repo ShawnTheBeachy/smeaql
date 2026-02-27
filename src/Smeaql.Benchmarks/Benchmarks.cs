@@ -3,7 +3,7 @@ using BenchmarkDotNet.Jobs;
 using Smeaql.Compilers;
 using SqlKata;
 
-namespace Smeaql.ConsoleApp;
+namespace Smeaql.Benchmarks;
 
 [SimpleJob(RuntimeMoniker.Net10_0)]
 [MemoryDiagnoser]

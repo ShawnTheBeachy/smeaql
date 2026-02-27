@@ -2,7 +2,7 @@
 
 internal static class StringExtensions
 {
-    public static ReadOnlySpan<char> Bracket(this ReadOnlySpan<char> value)
+    public static string Bracket(this string value)
     {
         if (value.Length < 1)
             return value;
@@ -20,6 +20,6 @@ internal static class StringExtensions
         for (var i = 0; i < value.Length; i++)
             arr[i + 1] = value[i];
 
-        return arr;
+        return new string(arr);
     }
 }

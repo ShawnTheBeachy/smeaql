@@ -11,10 +11,12 @@ public sealed class StringExtensionsTests
         const string value = "";
 
         // Act.
-        var bracketed = new string(value.Bracket());
+        var bracketed = value.Bracket();
 
         // Assert.
+        using var assert = Assert.Multiple();
         await Assert.That(bracketed).IsEqualTo(value);
+        await Assert.That(bracketed).IsSameReferenceAs(value);
     }
 
     [Test]
@@ -24,10 +26,12 @@ public sealed class StringExtensionsTests
         const string value = "\"Value\"";
 
         // Act.
-        var bracketed = new string(value.Bracket());
+        var bracketed = value.Bracket();
 
         // Assert.
+        using var assert = Assert.Multiple();
         await Assert.That(bracketed).IsEqualTo(value);
+        await Assert.That(bracketed).IsSameReferenceAs(value);
     }
 
     [Test]
@@ -37,10 +41,12 @@ public sealed class StringExtensionsTests
         const string value = "[Value]";
 
         // Act.
-        var bracketed = new string(value.Bracket());
+        var bracketed = value.Bracket();
 
         // Assert.
+        using var assert = Assert.Multiple();
         await Assert.That(bracketed).IsEqualTo(value);
+        await Assert.That(bracketed).IsSameReferenceAs(value);
     }
 
     [Test]
@@ -50,9 +56,11 @@ public sealed class StringExtensionsTests
         const string value = "My Value";
 
         // Act.
-        var bracketed = new string(value.Bracket());
+        var bracketed = value.Bracket();
 
         // Assert.
+        using var assert = Assert.Multiple();
         await Assert.That(bracketed).IsEqualTo("[My Value]");
+        await Assert.That(bracketed).IsNotSameReferenceAs(value);
     }
 }

@@ -19,7 +19,7 @@ public sealed class SqlQueryBaseTests
         await Assert.That(query.Clauses.Count).IsEqualTo(1);
         await Assert.That(query.Clauses[0]).IsTypeOf<FromTableClause>();
         var (sql, _) = new SqlServerCompiler().Compile(query);
-        await Assert.That(sql).IsEqualTo("SELECT * FROM Table");
+        await Assert.That(sql).IsEqualTo("SELECT * FROM [Table]");
     }
 
     [Test]

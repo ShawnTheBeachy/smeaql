@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using Smeaql.Helpers;
 
 namespace Smeaql.Order;
 
@@ -19,7 +20,7 @@ internal sealed class OrderColumnsClause : OrderClause
     {
         for (var i = 0; i < _columns.Count; i++)
         {
-            stringBuilder.Append($"{_columns[i]} {Direction.ToSql()}");
+            stringBuilder.Append($"{_columns[i].Bracket()} {Direction.ToSql()}");
 
             if (i < _columns.Count - 1)
                 stringBuilder.Append(',');

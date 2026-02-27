@@ -16,7 +16,9 @@ public sealed class WhereValueClauseTests
         await Assert.That(query.Clauses.OfType<WhereValueClause>().Count()).IsEqualTo(1);
         await Assert.That(query.Clauses.OfType<WhereValueClause>().First().Operator).IsEqualTo(">");
         var compiledQuery = new SqlServerCompiler().Compile(query);
-        await Assert.That(compiledQuery.Sql).IsEqualTo("SELECT * FROM Books WHERE Rating > @p0");
+        await Assert
+            .That(compiledQuery.Sql)
+            .IsEqualTo("SELECT * FROM [Books] WHERE [Rating] > @p0");
     }
 
     [Test]
@@ -30,7 +32,9 @@ public sealed class WhereValueClauseTests
         await Assert.That(query.Clauses.OfType<WhereValueClause>().Count()).IsEqualTo(1);
         await Assert.That(query.Clauses.OfType<WhereValueClause>().First().Operator).IsEqualTo("=");
         var compiledQuery = new SqlServerCompiler().Compile(query);
-        await Assert.That(compiledQuery.Sql).IsEqualTo("SELECT * FROM Books WHERE Rating = @p0");
+        await Assert
+            .That(compiledQuery.Sql)
+            .IsEqualTo("SELECT * FROM [Books] WHERE [Rating] = @p0");
     }
 
     [Test]
@@ -43,7 +47,9 @@ public sealed class WhereValueClauseTests
         using var asserts = Assert.Multiple();
         await Assert.That(query.Clauses.OfType<WhereValueClause>().Count()).IsEqualTo(1);
         var compiledQuery = new SqlServerCompiler().Compile(query);
-        await Assert.That(compiledQuery.Sql).IsEqualTo("SELECT * FROM Books WHERE Rating = @p0");
+        await Assert
+            .That(compiledQuery.Sql)
+            .IsEqualTo("SELECT * FROM [Books] WHERE [Rating] = @p0");
         await Assert.That(compiledQuery.Parameters.Count).IsEqualTo(1);
         await Assert.That(compiledQuery.Parameters.First().Key).IsEqualTo("p0");
         await Assert.That(compiledQuery.Parameters.First().Value).IsEqualTo(5);
@@ -59,7 +65,9 @@ public sealed class WhereValueClauseTests
         using var asserts = Assert.Multiple();
         await Assert.That(query.Clauses.OfType<WhereValueClause>().Count()).IsEqualTo(1);
         var compiledQuery = new SqlServerCompiler().Compile(query);
-        await Assert.That(compiledQuery.Sql).IsEqualTo("SELECT * FROM Books WHERE Favorite = @p0");
+        await Assert
+            .That(compiledQuery.Sql)
+            .IsEqualTo("SELECT * FROM [Books] WHERE [Favorite] = @p0");
         await Assert.That(compiledQuery.Parameters.First().Value).IsEqualTo(1);
     }
 
@@ -73,7 +81,9 @@ public sealed class WhereValueClauseTests
         using var asserts = Assert.Multiple();
         await Assert.That(query.Clauses.OfType<WhereValueClause>().Count()).IsEqualTo(1);
         var compiledQuery = new SqlServerCompiler().Compile(query);
-        await Assert.That(compiledQuery.Sql).IsEqualTo("SELECT * FROM Books WHERE Favorite = @p0");
+        await Assert
+            .That(compiledQuery.Sql)
+            .IsEqualTo("SELECT * FROM [Books] WHERE [Favorite] = @p0");
         await Assert.That(compiledQuery.Parameters.First().Value).IsEqualTo(0);
     }
 }

@@ -5,6 +5,21 @@ namespace Smeaql.Tests.Unit.Helpers;
 public sealed class StringExtensionsTests
 {
     [Test]
+    public async Task Bracket_ShouldDoNothing_WhenValueIsAsterisk()
+    {
+        // Arrange.
+        const string value = "*";
+
+        // Act.
+        var bracketed = value.Bracket();
+
+        // Assert.
+        using var assert = Assert.Multiple();
+        await Assert.That(bracketed).IsEqualTo(value);
+        await Assert.That(bracketed).IsSameReferenceAs(value);
+    }
+
+    [Test]
     public async Task Bracket_ShouldDoNothing_WhenValueIsEmpty()
     {
         // Arrange.
@@ -62,6 +77,19 @@ public sealed class StringExtensionsTests
         using var assert = Assert.Multiple();
         await Assert.That(bracketed).IsEqualTo("[My Value]");
         await Assert.That(bracketed).IsNotSameReferenceAs(value);
+    }
+
+    [Test]
+    public async Task Bracket_ShouldHandleColumn_WhenItIsAliased()
+    {
+        // Arrange.
+        const string value = "Value AS Values";
+
+        // Act.
+        var bracketed = value.Bracket();
+
+        // Assert.
+        await Assert.That(bracketed).IsEqualTo("[Value] AS [Values]");
     }
 
     [Test]

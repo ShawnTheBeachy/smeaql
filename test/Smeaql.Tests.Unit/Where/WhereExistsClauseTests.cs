@@ -19,7 +19,7 @@ public sealed class WhereExistsClauseTests
         await Assert
             .That(sql)
             .IsEqualTo(
-                "SELECT * FROM Fruits WHERE EXISTS(SELECT @p0 FROM Favorites WHERE Id = @p1)"
+                "SELECT * FROM [Fruits] WHERE EXISTS(SELECT @p0 FROM [Favorites] WHERE [Id] = @p1)"
             );
         await Assert.That(parameters.Count).IsEqualTo(2);
         await Assert.That(parameters["p0"]).IsEqualTo(1);
@@ -40,7 +40,7 @@ public sealed class WhereExistsClauseTests
         await Assert
             .That(sql)
             .IsEqualTo(
-                "SELECT * FROM Fruits WHERE NOT EXISTS(SELECT @p0 FROM Favorites WHERE Id = @p1)"
+                "SELECT * FROM [Fruits] WHERE NOT EXISTS(SELECT @p0 FROM [Favorites] WHERE [Id] = @p1)"
             );
         await Assert.That(parameters.Count).IsEqualTo(2);
         await Assert.That(parameters["p0"]).IsEqualTo(1);
@@ -66,7 +66,7 @@ public sealed class WhereExistsClauseTests
         await Assert
             .That(compiledQuery.Sql)
             .IsEqualTo(
-                "SELECT FirstName,LastName FROM Customers WHERE NOT EXISTS(SELECT @p0 FROM InactiveCustomers WHERE CustomerId = InactiveCustomerId)"
+                "SELECT [FirstName],[LastName] FROM [Customers] WHERE NOT EXISTS(SELECT @p0 FROM [InactiveCustomers] WHERE [CustomerId] = [InactiveCustomerId])"
             );
         await Assert.That(compiledQuery.Parameters.Count).IsEqualTo(1);
         await Assert.That(compiledQuery.Parameters["p0"]).IsEqualTo(1);

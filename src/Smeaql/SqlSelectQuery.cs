@@ -18,17 +18,21 @@ public sealed class SqlSelectQuery : SqlQueryBase<SqlSelectQuery>
     public SqlSelectQuery Having(string column, object? value) => Having(column, "=", value);
 
     public SqlSelectQuery Having(string column, string @operator, object? value) =>
-        HavingPrivate(column, @operator, WhereFlag.And, value);
+        HavingPrivate(column, @operator, ConditionType.And, value);
 
     private SqlSelectQuery HavingPrivate(
         string column,
         string @operator,
-        WhereFlag whereFlag,
+        ConditionType conditionType,
         object? value
     )
     {
         Clauses.Add(
-            new HavingValueClause(column, value) { Operator = @operator, WhereFlag = whereFlag }
+            new HavingValueClause(column, value)
+            {
+                Operator = @operator,
+                ConditionType = conditionType,
+            }
         );
         return This();
     }
@@ -54,7 +58,7 @@ public sealed class SqlSelectQuery : SqlQueryBase<SqlSelectQuery>
     public SqlSelectQuery OrHaving(string column, object? value) => OrHaving(column, "=", value);
 
     public SqlSelectQuery OrHaving(string column, string @operator, object? value) =>
-        HavingPrivate(column, @operator, WhereFlag.Or, value);
+        HavingPrivate(column, @operator, ConditionType.Or, value);
 
     public SqlSelectQuery Page(int page, int size)
     {

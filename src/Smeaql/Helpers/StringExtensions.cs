@@ -2,17 +2,60 @@
 
 internal static class StringExtensions
 {
+    private static int? AliasIndex(this ReadOnlySpan<char> value)
+    {
+        char? lastChar = null;
+
+        for (var i = 0; i < value.Length; i++)
+        {
+            var c = value[i];
+
+            switch (lastChar)
+            {
+                case null when c == ' ':
+                    lastChar = c;
+                    break;
+                case ' ' when c is 'a' or 'A':
+                    lastChar = 'A';
+                    break;
+                case 'A' when c is 's' or 'S':
+                    lastChar = 'S';
+                    break;
+                case 's' or 'S' when c == ' ':
+                    return i - 3;
+            }
+        }
+
+        return null;
+    }
+
     public static string Bracket(this string value)
     {
         if (value.Length < 1)
             return value;
 
-        if (value[0] == '[' && value[^1] == ']')
+        var valueSpan = value.AsSpan();
+
+        if (valueSpan.Length == 1 && valueSpan[0] == '*')
             return value;
 
-        if (value[0] == '"' && value[^1] == '"')
+        if (valueSpan[0] == '[' && valueSpan[^1] == ']')
             return value;
 
+        if (valueSpan[0] == '"' && valueSpan[^1] == '"')
+            return value;
+
+        var aliasIndex = valueSpan.AliasIndex();
+
+        if (aliasIndex is null)
+            return new string(BracketInternal(valueSpan));
+
+        var aiv = aliasIndex.Value;
+        return $"{BracketInternal(valueSpan[..aiv])}{valueSpan[aiv..(aiv + 4)]}{BracketInternal(valueSpan[(aiv + 4)..])}";
+    }
+
+    private static ReadOnlySpan<char> BracketInternal(ReadOnlySpan<char> value)
+    {
         var periodCount = value.Count('.');
         var arr = new char[value.Length + (periodCount + 1) * 2];
         arr[0] = '[';
@@ -31,17 +74,6 @@ internal static class StringExtensions
         }
 
         arr[^1] = ']';
-        return new string(arr);
-    }
-
-    private static int Count(this string value, char c)
-    {
-        var count = 0;
-
-        foreach (var character in value)
-            if (EqualityComparer<char>.Default.Equals(character, c))
-                count++;
-
-        return count;
+        return arr;
     }
 }

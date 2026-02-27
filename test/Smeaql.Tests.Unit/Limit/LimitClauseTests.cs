@@ -1,5 +1,4 @@
 ﻿using Smeaql.Compilers;
-using TUnit.Assertions.Conditions;
 
 namespace Smeaql.Tests.Unit.Limit;
 
@@ -14,7 +13,9 @@ public sealed class LimitClauseTests
         // Assert.
         var compiledQuery = new SqliteCompiler().Compile(query);
         using var asserts = Assert.Multiple();
-        await Assert.That(compiledQuery.Sql).IsEqualTo("SELECT * FROM Books LIMIT @p0 OFFSET @p1");
+        await Assert
+            .That(compiledQuery.Sql)
+            .IsEqualTo("SELECT * FROM [Books] LIMIT @p0 OFFSET @p1");
         await Assert.That(compiledQuery.Parameters["p0"]).IsEqualTo(5);
         await Assert.That(compiledQuery.Parameters["p1"]).IsEqualTo(5);
     }
@@ -30,7 +31,7 @@ public sealed class LimitClauseTests
         using var asserts = Assert.Multiple();
         await Assert
             .That(compiledQuery.Sql)
-            .IsEqualTo("SELECT * FROM Books OFFSET @p0 ROWS FETCH NEXT @p1 ROWS ONLY");
+            .IsEqualTo("SELECT * FROM [Books] OFFSET @p0 ROWS FETCH NEXT @p1 ROWS ONLY");
         await Assert.That(compiledQuery.Parameters["p0"]).IsEqualTo(5);
         await Assert.That(compiledQuery.Parameters["p1"]).IsEqualTo(5);
     }

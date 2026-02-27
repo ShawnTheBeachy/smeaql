@@ -100,7 +100,7 @@ public abstract class SqlCompiler<T>
             if (!firstClause)
             {
                 stringBuilder.Append(' ');
-                stringBuilder.Append(clause.WhereFlag.ToSql());
+                stringBuilder.Append(clause.ConditionType.ToSql());
                 stringBuilder.Append(' ');
             }
             else
@@ -205,7 +205,7 @@ public abstract class SqlCompiler<T>
             if (!firstClause)
             {
                 stringBuilder.Append(' ');
-                stringBuilder.Append(clause.WhereFlag.ToSql());
+                stringBuilder.Append(clause.ConditionType.ToSql());
                 stringBuilder.Append(' ');
             }
             else

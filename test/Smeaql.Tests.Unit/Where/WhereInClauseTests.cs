@@ -19,7 +19,7 @@ public sealed class WhereInClauseTests
         var compiledQuery = new SqlServerCompiler().Compile(query);
         await Assert
             .That(compiledQuery.Sql)
-            .IsEqualTo("SELECT * FROM Books WHERE Author IN (@p0,@p1)");
+            .IsEqualTo("SELECT * FROM [Books] WHERE [Author] IN (@p0,@p1)");
         await Assert.That(compiledQuery.Parameters.Count).IsEqualTo(2);
         await Assert.That(compiledQuery.Parameters["p0"]).IsEqualTo(authorA);
         await Assert.That(compiledQuery.Parameters["p1"]).IsEqualTo(authorB);
